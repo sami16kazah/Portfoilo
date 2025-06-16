@@ -10,6 +10,7 @@ import { cn } from "../lib/util";
 import GrainEFfect from "@/components/visualEffects/GrainEffects";
 import { Cursor } from "@/components/cursor/Curosr";
 import { LocaleProvider } from "@/app/context/LocalContext";
+
 const inter = Inter({ subsets: ["latin"] });
 const MainFont = Bricolage_Grotesque({ subsets: ["latin"] });
 const OswaldFont = Oswald({ subsets: ["latin"], variable: "--font-oswald" });
@@ -39,7 +40,7 @@ export default function RootLayout({
       >
         <GrainEFfect></GrainEFfect>
         <Cursor color="white"></Cursor>
-        <LocaleProvider>{children}</LocaleProvider>
+        <LocaleProvider> {children}</LocaleProvider>
         <div className="modal-container"></div>
       </body>
     </html>

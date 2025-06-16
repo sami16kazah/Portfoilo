@@ -1,4 +1,3 @@
-// src/app/ClientHome.tsx
 "use client";
 import LandingSection from "@/section/Landing";
 import { FeaturedCard } from "@/components/cards/FeaturedCard";
@@ -6,48 +5,38 @@ import ExpandableFeature from "@/components/Expandabel/ExpandabelFeature";
 import { Heading } from "@/components/heading/heading";
 import { Card } from "@/components/ui/Card";
 import { FaGlobe } from "react-icons/fa";
-import Modal from "@/components/Modal";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useLocale } from "@/app/context/LocalContext";
+import ModalHandler from "@/components/ModalHandler"; // ✅ import here
 
 export default function ClientHome() {
   const { locale, toggleLocale, t } = useLocale();
-  const searchParams = useSearchParams();
-  const [showModel, setShowModel] = useState(false);
-
-  const show = searchParams.get("show");
-  const title = searchParams.get("title");
-  const description = searchParams.get("message");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (show !== null) {
-      setShowModel(show === "true");
-    }
-  }, [show]);
-
-  const handleClose = () => setShowModel(false);
+    setMounted(true);
+  }, []);
 
   return (
     <div>
-      {showModel && (
-        <Modal
-          onClose={handleClose}
-          title={title!}
-          description={description!}
-          buttonDescription={"Accept"}
-        />
-      )}
+      {/* ✅ Modal is conditionally rendered via ModalHandler */}
+      <ModalHandler />
 
       <div className="w-full flex justify-end p-4">
-        <button
-          onClick={toggleLocale}
-          className="flex items-center gap-2 text-white bg-black px-4 py-2 rounded-full hover:bg-gray-800 transition"
-        >
-          <FaGlobe />
-          {locale === "en" ? "Deutsch" : "English"}
-        </button>
+        {mounted ? (
+          <button
+            onClick={toggleLocale}
+            style={{ cursor: "none" }}
+            className="flex items-center gap-2 text-white bg-black px-4 py-2 rounded-full hover:bg-gray-800 transition"
+          >
+            <FaGlobe />
+            {locale === "en" ? "Deutsch" : "English"}
+          </button>
+        ) : (
+          <div className="w-[120px] h-[36px]" />
+        )}
       </div>
+
       <LandingSection />
       <Heading number="01" title_1={t.heading1} title_2={t.project} />
 
