@@ -8,7 +8,7 @@ import { FaGlobe } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useLocale } from "@/app/context/LocalContext";
 import ModalHandler from "@/components/ModalHandler"; // ✅ import here
-
+import { Suspense } from "react";
 export default function ClientHome() {
   const { locale, toggleLocale, t } = useLocale();
   const [mounted, setMounted] = useState(false);
@@ -20,8 +20,9 @@ export default function ClientHome() {
   return (
     <div>
       {/* ✅ Modal is conditionally rendered via ModalHandler */}
-      <ModalHandler />
-
+      <Suspense fallback={null}>
+        <ModalHandler />
+      </Suspense>
       <div className="w-full flex justify-end p-4">
         {mounted ? (
           <button
