@@ -83,7 +83,7 @@ export default function ContactSection() {
               icon={<FaPhoneVolume className="fill-[#333] text-lg" />}
               text={
                 <div className=" flex flex-col gap-y-4 ">
-                  <p> +49-152-151-09694</p> <p>+49-176-327-93970</p>
+                  <p> +49-152-151-09694</p> <p>+49-176-321-93910</p>
                   <p> +963-937-590-305</p>
                 </div>
               }

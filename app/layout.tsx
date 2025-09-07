@@ -39,7 +39,7 @@ export default function RootLayout({
         )}
       >
         <GrainEFfect></GrainEFfect>
-        <Cursor color="white"></Cursor>
+        {/*  <Cursor color="white"></Cursor>  */}
         <LocaleProvider> {children}</LocaleProvider>
         <div className="modal-container"></div>
       </body>
