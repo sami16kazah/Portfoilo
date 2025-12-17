@@ -18,7 +18,6 @@ const PixelFont = Pixelify_Sans({
   subsets: ["latin"],
   variable: "--font-pixel)",
 });
-
 export const metadata: Metadata = {
   title: "Sami Kazah",
   description: "Sami Kazah Official Portfoilo",
