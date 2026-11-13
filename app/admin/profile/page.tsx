@@ -3,13 +3,15 @@
 import { useEffect, useState } from "react";
 import { 
   Box, Button, TextField, Typography, Paper, 
-  Grid, Divider, IconButton, MenuItem, Select, FormControl, InputLabel
+  Grid, Divider, IconButton, MenuItem, Select, FormControl, InputLabel, Alert
 } from "@mui/material";
 import { FaSave, FaUserCircle, FaTrash, FaPlus } from "react-icons/fa";
 import CloudinaryUploadButton from "@/components/admin/CloudinaryUploadButton";
 
 export default function ProfilePage() {
   const [loading, setLoading] = useState(false);
+  const [isDefaultSeed, setIsDefaultSeed] = useState(false);
+  const [feedback, setFeedback] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     name_de: "",
@@ -39,13 +41,28 @@ export default function ProfilePage() {
 
   const fetchProfile = async () => {
     try {
-      const res = await fetch("/api/profile");
+      const res = await fetch("/api/profile", { cache: "no-store" });
+      if (!res.ok) throw new Error("Failed to load profile");
       const data = await res.json();
+      setIsDefaultSeed(Boolean(data._isDefaultSeed));
       setFormData({
         ...data,
         name: data.name || "",
         name_de: data.name_de || "",
         name_ar: data.name_ar || "",
+        title: data.title || "",
+        title_de: data.title_de || "",
+        title_ar: data.title_ar || "",
+        email: data.email || "",
+        phone: data.phone || "",
+        cvUrl: data.cvUrl || "",
+        avatarUrl: data.avatarUrl || "",
+        socialLinks: {
+          github: data.socialLinks?.github || "",
+          linkedin: data.socialLinks?.linkedin || "",
+          twitter: data.socialLinks?.twitter || "",
+          instagram: data.socialLinks?.instagram || "",
+        },
         bio: Array.isArray(data.bio) ? data.bio.join("\n\n") : data.bio || "",
         bio_de: Array.isArray(data.bio_de) ? data.bio_de.join("\n\n") : data.bio_de || "",
         bio_ar: Array.isArray(data.bio_ar) ? data.bio_ar.join("\n\n") : data.bio_ar || "",
@@ -53,6 +70,7 @@ export default function ProfilePage() {
       });
     } catch (error) {
       console.error("Failed to fetch profile", error);
+      setFeedback({ type: "error", text: "Could not load profile data." });
     }
   };
 
@@ -101,6 +119,7 @@ export default function ProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setFeedback(null);
 
     const payload = {
       ...formData,
@@ -110,14 +129,21 @@ export default function ProfilePage() {
     };
 
     try {
-      await fetch("/api/profile", {
+      const res = await fetch("/api/profile", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      alert("Profile updated successfully!");
+      const data = await res.json();
+      if (!res.ok) {
+        setFeedback({ type: "error", text: data.error || "Failed to update profile." });
+        return;
+      }
+      setIsDefaultSeed(false);
+      setFeedback({ type: "success", text: "Profile updated and live portfolio refreshed." });
     } catch (error) {
       console.error("Failed to update profile", error);
+      setFeedback({ type: "error", text: "Network error while saving profile." });
     } finally {
       setLoading(false);
     }
@@ -125,15 +151,22 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex items-center gap-4 mb-6">
+      <div className="flex items-center gap-4 mb-2">
         <Typography variant="h4" fontWeight="bold">Personal Info</Typography>
       </div>
 
+      {isDefaultSeed && (
+        <Alert severity="info">
+          Showing your active portfolio defaults because no profile record is stored in MongoDB yet. Review any fields below and click <strong>Save Profile</strong> to store them in the database.
+        </Alert>
+      )}
+      {feedback && <Alert severity={feedback.type}>{feedback.text}</Alert>}
+
       <Paper className="p-8 radius-lg">
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="flex gap-6 items-start">
-             <div className="space-y-2 text-center">
-                 <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-200 relative group">
+          <div className="flex flex-col sm:flex-row gap-6 items-start">
+             <div className="space-y-2 text-center shrink-0">
+                 <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-200 relative group mx-auto">
                     {formData.avatarUrl ? (
                       <img src={formData.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
                     ) : (
@@ -149,7 +182,15 @@ export default function ProfilePage() {
                  </CloudinaryUploadButton>
              </div>
              
-             <div className="flex-1 space-y-6">
+             <div className="flex-1 w-full space-y-6">
+                <TextField
+                  label="Avatar Image Path or URL"
+                  name="avatarUrl"
+                  fullWidth
+                  size="small"
+                  value={formData.avatarUrl}
+                  onChange={handleChange}
+                />
                 <Grid container spacing={3}>
                   <Grid size={{ xs: 12, md: 6 }}>
                     <TextField
@@ -313,6 +354,11 @@ export default function ProfilePage() {
                             label="Proficiency"
                             onChange={(e) => handleLanguageChange(index, 'proficiency', e.target.value)}
                         >
+                            <MenuItem value="C2">C2 (Mastery / Native)</MenuItem>
+                            <MenuItem value="C1">C1 (Advanced)</MenuItem>
+                            <MenuItem value="B2">B2 (Upper Intermediate)</MenuItem>
+                            <MenuItem value="B1">B1 (Intermediate)</MenuItem>
+                            <MenuItem value="A2">A2 (Elementary)</MenuItem>
                             <MenuItem value="Native">Native</MenuItem>
                             <MenuItem value="Fluent">Fluent</MenuItem>
                             <MenuItem value="Advanced">Advanced</MenuItem>

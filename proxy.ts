@@ -5,19 +5,22 @@ import { authConfig } from "./auth.config";
 const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
-  const { pathname } = req.nextUrl;
-  const isLoggedIn = Boolean(req.auth?.user);
+  const { pathname, search } = req.nextUrl;
+  const isAdmin = Boolean(req.auth?.user && req.auth.user.role === "admin");
   const isOnAdmin = pathname.startsWith("/admin");
   const isOnLogin = pathname.startsWith("/admin/login");
+  const isOnSetup = pathname.startsWith("/setup");
 
   if (isOnAdmin) {
-    if (isOnLogin && isLoggedIn) {
+    if (isOnLogin && isAdmin) {
       return NextResponse.redirect(new URL("/admin/dashboard", req.url));
     }
-    if (!isOnLogin && !isLoggedIn) {
-      const signInUrl = req.nextUrl.clone();
-      signInUrl.pathname = "/admin/login";
-      signInUrl.searchParams.set("callbackUrl", req.nextUrl.href);
+    if (!isOnLogin && !isAdmin) {
+      const signInUrl = new URL("/admin/login", req.url);
+      const relativeTarget = `${pathname}${search}`;
+      if (relativeTarget.startsWith("/admin") && !relativeTarget.startsWith("/admin/login")) {
+        signInUrl.searchParams.set("callbackUrl", relativeTarget);
+      }
       return NextResponse.redirect(signInUrl);
     }
   }
@@ -32,9 +35,16 @@ export default auth((req) => {
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set("x-portfolio-locale", detectedLocale);
 
-  return NextResponse.next({
+  const response = NextResponse.next({
     request: { headers: requestHeaders },
   });
+
+  if (isOnAdmin || isOnSetup) {
+    response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+    response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
+  }
+
+  return response;
 });
 
 export const config = {

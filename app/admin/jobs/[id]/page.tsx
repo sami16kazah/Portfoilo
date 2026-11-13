@@ -3,21 +3,36 @@
 import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import {
+  Alert,
+  Box,
   Button,
+  Divider,
+  FormControlLabel,
+  Paper,
+  Switch,
   TextField,
   Typography,
-  Paper,
-  FormControlLabel,
-  Switch,
 } from "@mui/material";
-import { FaSave, FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaPlus, FaSave, FaTrash } from "react-icons/fa";
 import CloudinaryUploadButton from "@/components/admin/CloudinaryUploadButton";
+
+interface JobMetricForm {
+  label: string;
+  label_de: string;
+  label_ar: string;
+  value: string;
+  detail: string;
+  detail_de: string;
+  detail_ar: string;
+}
 
 export default function JobForm({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
   const isNew = resolvedParams.id === "new";
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [performanceMetrics, setPerformanceMetrics] = useState<JobMetricForm[]>([]);
 
   const [formData, setFormData] = useState({
     company: "",
@@ -46,7 +61,7 @@ export default function JobForm({ params }: { params: Promise<{ id: string }> })
 
   useEffect(() => {
     if (!isNew) {
-      fetch(`/api/jobs/${resolvedParams.id}`)
+      fetch(`/api/jobs/${resolvedParams.id}`, { cache: "no-store" })
         .then((res) => res.json())
         .then((data) => {
           setFormData({
@@ -73,8 +88,24 @@ export default function JobForm({ params }: { params: Promise<{ id: string }> })
             featured: data.featured ?? true,
             order: data.order ?? 0,
           });
+          setPerformanceMetrics(
+            Array.isArray(data.performanceMetrics)
+              ? data.performanceMetrics.map((m: JobMetricForm) => ({
+                  label: m.label || "",
+                  label_de: m.label_de || "",
+                  label_ar: m.label_ar || "",
+                  value: m.value || "",
+                  detail: m.detail || "",
+                  detail_de: m.detail_de || "",
+                  detail_ar: m.detail_ar || "",
+                }))
+              : []
+          );
         })
-        .catch((err) => console.error("Failed to fetch job", err));
+        .catch((err) => {
+          console.error("Failed to fetch job", err);
+          setErrorMsg("Unable to fetch job entry.");
+        });
     }
   }, [isNew, resolvedParams.id]);
 
@@ -83,9 +114,27 @@ export default function JobForm({ params }: { params: Promise<{ id: string }> })
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const addMetric = () => {
+    setPerformanceMetrics((prev) => [
+      ...prev,
+      { label: "", label_de: "", label_ar: "", value: "", detail: "", detail_de: "", detail_ar: "" },
+    ]);
+  };
+
+  const removeMetric = (idx: number) => {
+    setPerformanceMetrics((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const updateMetric = (idx: number, field: keyof JobMetricForm, value: string) => {
+    setPerformanceMetrics((prev) =>
+      prev.map((m, i) => (i === idx ? { ...m, [field]: value } : m))
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMsg("");
 
     const payload = {
       ...formData,
@@ -93,6 +142,17 @@ export default function JobForm({ params }: { params: Promise<{ id: string }> })
       highlights_de: formData.highlights_de.split("\n").map((s) => s.trim()).filter(Boolean),
       highlights_ar: formData.highlights_ar.split("\n").map((s) => s.trim()).filter(Boolean),
       techStack: formData.techStack.split(",").map((s) => s.trim()).filter(Boolean),
+      performanceMetrics: performanceMetrics
+        .map((m) => ({
+          label: m.label.trim(),
+          label_de: m.label_de.trim(),
+          label_ar: m.label_ar.trim(),
+          value: m.value.trim(),
+          detail: m.detail.trim(),
+          detail_de: m.detail_de.trim(),
+          detail_ar: m.detail_ar.trim(),
+        }))
+        .filter((m) => m.label && m.value),
     };
 
     try {
@@ -106,9 +166,13 @@ export default function JobForm({ params }: { params: Promise<{ id: string }> })
       if (res.ok) {
         router.push("/admin/jobs");
         router.refresh();
+        return;
       }
+      const data = await res.json();
+      setErrorMsg(data.error || "Failed to save job.");
     } catch (error) {
       console.error("Failed to save job", error);
+      setErrorMsg("Network error while saving job.");
     } finally {
       setLoading(false);
     }
@@ -124,6 +188,8 @@ export default function JobForm({ params }: { params: Promise<{ id: string }> })
           {isNew ? "Add Job" : "Edit Job"}
         </Typography>
       </div>
+
+      {errorMsg && <Alert severity="error">{errorMsg}</Alert>}
 
       <Paper className="p-8">
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -185,6 +251,91 @@ export default function JobForm({ params }: { params: Promise<{ id: string }> })
           </div>
 
           <TextField label="Tech Stack (comma separated)" name="techStack" fullWidth value={formData.techStack} onChange={handleChange} />
+
+          <Divider />
+
+          <Box className="rounded-lg border border-gray-200 bg-gray-50 p-4 space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  Role Performance & Architecture Metrics
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  KPI badges displayed directly on the job card (e.g., AWS Frankfurt, GoBD + EN 16931).
+                </Typography>
+              </div>
+              <Button type="button" size="small" variant="outlined" startIcon={<FaPlus />} onClick={addMetric}>
+                Add Metric
+              </Button>
+            </div>
+
+            {performanceMetrics.map((metric, idx) => (
+              <div key={idx} className="p-3 bg-white rounded border border-gray-200 space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                  <TextField
+                    size="small"
+                    label="Value (e.g., AWS Frankfurt)"
+                    value={metric.value}
+                    onChange={(e) => updateMetric(idx, "value", e.target.value)}
+                  />
+                  <TextField
+                    size="small"
+                    label="Label (EN)"
+                    value={metric.label}
+                    onChange={(e) => updateMetric(idx, "label", e.target.value)}
+                  />
+                  <TextField
+                    size="small"
+                    label="Label (DE)"
+                    value={metric.label_de}
+                    onChange={(e) => updateMetric(idx, "label_de", e.target.value)}
+                  />
+                  <TextField
+                    size="small"
+                    label="Label (AR)"
+                    dir="rtl"
+                    value={metric.label_ar}
+                    onChange={(e) => updateMetric(idx, "label_ar", e.target.value)}
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-2 items-center">
+                  <div className="md:col-span-4">
+                    <TextField
+                      fullWidth
+                      size="small"
+                      label="Detail (EN)"
+                      value={metric.detail}
+                      onChange={(e) => updateMetric(idx, "detail", e.target.value)}
+                    />
+                  </div>
+                  <div className="md:col-span-4">
+                    <TextField
+                      fullWidth
+                      size="small"
+                      label="Detail (DE)"
+                      value={metric.detail_de}
+                      onChange={(e) => updateMetric(idx, "detail_de", e.target.value)}
+                    />
+                  </div>
+                  <div className="md:col-span-3">
+                    <TextField
+                      fullWidth
+                      size="small"
+                      label="Detail (AR)"
+                      dir="rtl"
+                      value={metric.detail_ar}
+                      onChange={(e) => updateMetric(idx, "detail_ar", e.target.value)}
+                    />
+                  </div>
+                  <div className="md:col-span-1 flex justify-end">
+                    <Button type="button" color="error" size="small" onClick={() => removeMetric(idx)}>
+                      <FaTrash />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </Box>
 
           <div className="flex justify-end pt-4">
             <Button type="submit" variant="contained" size="large" startIcon={<FaSave />} disabled={loading} sx={{ bgcolor: "black", "&:hover": { bgcolor: "#333" } }}>

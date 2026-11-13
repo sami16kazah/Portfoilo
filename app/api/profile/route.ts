@@ -1,50 +1,66 @@
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/db";
 import { PersonalInfo } from "@/models/PersonalInfo";
-import { auth } from "@/auth";
+import { DEFAULT_PROFILE } from "@/data/portfolioDefaults";
+import { requireAdmin, revalidatePortfolioPaths, sanitizeModelInput } from "@/lib/apiUtils";
+import { PROFILE_SANITIZE } from "@/lib/portfolioSchemas";
+import { sanitizeUrl } from "@/lib/security";
 
 export async function GET() {
+  const adminCheck = await requireAdmin();
+  if (!adminCheck.ok) return adminCheck.response;
+
   try {
     await connectToDatabase();
-    // Assuming single-user profile for now, or fetch the first one
-    const info = await PersonalInfo.findOne();
+    const info = await PersonalInfo.findOne().lean();
     if (!info) {
-      return NextResponse.json({ 
-        name: "", title: "", bio: [], email: "", phone: "", 
-        socialLinks: { github: "", linkedin: "", twitter: "", instagram: "" },
-        cvUrl: "", avatarUrl: ""
-      }); 
+      return NextResponse.json({
+        ...DEFAULT_PROFILE,
+        _isDefaultSeed: true,
+      });
     }
     return NextResponse.json(info);
   } catch (error) {
+    console.error("Failed to fetch profile:", error);
     return NextResponse.json({ error: "Failed to fetch profile" }, { status: 500 });
   }
 }
 
 export async function PUT(req: Request) {
-  try {
-    const session = await auth();
-    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const adminCheck = await requireAdmin();
+  if (!adminCheck.ok) return adminCheck.response;
 
+  try {
     await connectToDatabase();
-    const body = await req.json();
-    
-    // Upsert: update if exists, insert if not
-    // We use findOneAndUpdate with upsert: true. 
-    // Since we only have one profile, we can use an empty filter {} if we ensure only one exists, 
-    // but better to manage via ID if we had it. Here we just take the first one.
-    
-    // First, check if one exists
-    let info = await PersonalInfo.findOne();
-    
-    if (info) {
-       info = await PersonalInfo.findByIdAndUpdate(info._id, body, { new: true });
-    } else {
-       info = await PersonalInfo.create(body);
+    const rawBody = await req.json();
+    const sanitized = sanitizeModelInput(rawBody, PROFILE_SANITIZE);
+
+    if (sanitized.socialLinks && typeof sanitized.socialLinks === "object" && !Array.isArray(sanitized.socialLinks)) {
+      const social = sanitized.socialLinks as Record<string, unknown>;
+      sanitized.socialLinks = {
+        github: sanitizeUrl(social.github),
+        linkedin: sanitizeUrl(social.linkedin),
+        twitter: sanitizeUrl(social.twitter),
+        instagram: sanitizeUrl(social.instagram),
+      };
     }
-    
-    return NextResponse.json(info);
+
+    const existing = await PersonalInfo.findOne();
+    let updated;
+    if (existing) {
+      updated = await PersonalInfo.findByIdAndUpdate(
+        existing._id,
+        { $set: sanitized },
+        { new: true, runValidators: true }
+      );
+    } else {
+      updated = await PersonalInfo.create(sanitized);
+    }
+
+    revalidatePortfolioPaths();
+    return NextResponse.json(updated);
   } catch (error) {
+    console.error("Failed to update profile:", error);
     return NextResponse.json({ error: "Failed to update profile" }, { status: 500 });
   }
 }

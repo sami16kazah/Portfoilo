@@ -1,5 +1,7 @@
 import Mailjet from "node-mailjet";
 import { NextResponse } from "next/server";
+import { z } from "zod";
+import { checkRateLimit, getClientIp } from "@/lib/security";
 
 function escapeHtml(value: unknown): string {
   return String(value ?? "")
@@ -10,8 +12,30 @@ function escapeHtml(value: unknown): string {
     .replace(/'/g, "&#39;");
 }
 
+const EmailSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(120),
+  email: z.string().trim().email("Please enter a valid email address").max(200),
+  subject: z.string().trim().max(200).optional().default(""),
+  message: z.string().trim().min(1, "Message is required").max(5000),
+  service: z.string().trim().max(120).optional().default(""),
+  budget: z.string().trim().max(120).optional().default(""),
+  website: z.string().optional().default(""), // optional honeypot
+});
+
 export async function POST(req: Request) {
   try {
+    const ip = getClientIp(req);
+    const rate = checkRateLimit(`contact:${ip}`, 5, 15 * 60 * 1000);
+    if (!rate.allowed) {
+      return NextResponse.json(
+        {
+          error: "Too many messages",
+          message: `Too many requests. Please wait ${Math.ceil(rate.retryAfterSeconds / 60)} minute(s) or email samkazah444@gmail.com directly.`,
+        },
+        { status: 429 }
+      );
+    }
+
     const apiKey = process.env.MJ_APIKEY_PUBLIC;
     const apiSecret = process.env.MJ_APIKEY_PRIVATE;
     const senderEmail = process.env.MAILJET_SENDER_EMAIL;
@@ -27,24 +51,24 @@ export async function POST(req: Request) {
       );
     }
 
-    const body = await req.json();
-    const name = String(body?.name ?? "").trim();
-    const email = String(body?.email ?? "").trim();
-    const subject = String(body?.subject ?? "").trim();
-    const message = String(body?.message ?? "").trim();
-    const service = String(body?.service ?? "").trim();
-    const budget = String(body?.budget ?? "").trim();
-
-    if (!name || !email || !message) {
+    const rawBody = await req.json();
+    const parsed = EmailSchema.safeParse(rawBody);
+    if (!parsed.success) {
       return NextResponse.json(
         {
-          error: "Missing fields",
-          message: "Name, email, and message are required.",
+          error: "Validation failed",
+          message: "Please provide a valid name, email address, and message.",
         },
         { status: 400 }
       );
     }
 
+    // Silent success for automated honeypot bots
+    if (parsed.data.website.trim()) {
+      return NextResponse.json({ status: "Email sent successfully!" });
+    }
+
+    const { name, email, subject, message, service, budget } = parsed.data;
     const mailjet = new Mailjet({ apiKey, apiSecret });
 
     const safeName = escapeHtml(name);
@@ -95,13 +119,12 @@ export async function POST(req: Request) {
     });
   } catch (error: unknown) {
     console.error("Email route error:", error);
-    const errObj = error as { message?: string; statusCode?: number };
     return NextResponse.json(
       {
         error: "Error sending email",
-        message: errObj?.message || "Unknown error occurred",
+        message: "Failed to deliver email. Please contact samkazah444@gmail.com directly.",
       },
-      { status: errObj?.statusCode || 500 }
+      { status: 500 }
     );
   }
 }

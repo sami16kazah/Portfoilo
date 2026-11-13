@@ -21,6 +21,53 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async headers() {
+    const baseSecurityHeaders = [
+      { key: "X-Frame-Options", value: "DENY" },
+      { key: "X-Content-Type-Options", value: "nosniff" },
+      { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+      {
+        key: "Permissions-Policy",
+        value: "camera=(), microphone=(), geolocation=()",
+      },
+    ];
+
+    const privateNoStoreHeaders = [
+      { key: "Cache-Control", value: "no-store, no-cache, must-revalidate" },
+      { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" },
+    ];
+
+    return [
+      {
+        source: "/(.*)",
+        headers: baseSecurityHeaders,
+      },
+      {
+        source: "/admin/:path*",
+        headers: privateNoStoreHeaders,
+      },
+      {
+        source: "/setup/:path*",
+        headers: privateNoStoreHeaders,
+      },
+      {
+        source: "/api/admin/:path*",
+        headers: privateNoStoreHeaders,
+      },
+      {
+        source: "/api/migrate",
+        headers: privateNoStoreHeaders,
+      },
+      {
+        source: "/api/setup",
+        headers: privateNoStoreHeaders,
+      },
+      {
+        source: "/api/sign-cloudinary-params",
+        headers: privateNoStoreHeaders,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

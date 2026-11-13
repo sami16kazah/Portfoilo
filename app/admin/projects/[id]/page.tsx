@@ -3,15 +3,29 @@
 import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import {
+  Alert,
+  Box,
   Button,
+  Divider,
+  FormControl,
+  FormControlLabel,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  Switch,
   TextField,
   Typography,
-  Paper,
-  FormControlLabel,
-  Switch,
 } from "@mui/material";
-import { FaSave, FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaPlus, FaSave, FaTrash } from "react-icons/fa";
 import CloudinaryUploadButton from "@/components/admin/CloudinaryUploadButton";
+
+interface VideoChapterForm {
+  title: string;
+  title_de: string;
+  title_ar: string;
+  url: string;
+}
 
 export default function ProjectForm({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -19,6 +33,8 @@ export default function ProjectForm({ params }: { params: Promise<{ id: string }
 
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [videoChapters, setVideoChapters] = useState<VideoChapterForm[]>([]);
   const [formData, setFormData] = useState({
     title: "",
     title_de: "",
@@ -32,12 +48,17 @@ export default function ProjectForm({ params }: { params: Promise<{ id: string }
     credits: "",
     credits_de: "",
     credits_ar: "",
+    highlights: "",
+    highlights_de: "",
+    highlights_ar: "",
     tags: "",
     repoUrl: "",
     demoUrl: "",
     videoUrl: "",
     imageUrl: "",
     logoUrl: "",
+    brandColor: "#059669",
+    demoStatus: "ready",
     date: "",
     featured: false,
   });
@@ -50,7 +71,8 @@ export default function ProjectForm({ params }: { params: Promise<{ id: string }
 
   const fetchProject = async (id: string) => {
     try {
-      const res = await fetch(`/api/projects/${id}`);
+      const res = await fetch(`/api/projects/${id}`, { cache: "no-store" });
+      if (!res.ok) throw new Error("Failed to load project");
       const data = await res.json();
       setFormData({
         title: data.title || "",
@@ -65,17 +87,33 @@ export default function ProjectForm({ params }: { params: Promise<{ id: string }
         credits: data.credits || "",
         credits_de: data.credits_de || "",
         credits_ar: data.credits_ar || "",
+        highlights: Array.isArray(data.highlights) ? data.highlights.join("\n") : "",
+        highlights_de: Array.isArray(data.highlights_de) ? data.highlights_de.join("\n") : "",
+        highlights_ar: Array.isArray(data.highlights_ar) ? data.highlights_ar.join("\n") : "",
         tags: Array.isArray(data.tags) ? data.tags.join(", ") : data.tags || "",
         repoUrl: data.repoUrl || "",
         demoUrl: data.demoUrl || "",
         videoUrl: data.videoUrl || "",
         imageUrl: data.imageUrl || "",
         logoUrl: data.logoUrl || "",
+        brandColor: data.brandColor || "#059669",
+        demoStatus: data.demoStatus || "ready",
         date: data.date || "",
         featured: Boolean(data.featured),
       });
+      setVideoChapters(
+        Array.isArray(data.videoChapters)
+          ? data.videoChapters.map((ch: VideoChapterForm) => ({
+              title: ch.title || "",
+              title_de: ch.title_de || "",
+              title_ar: ch.title_ar || "",
+              url: ch.url || "",
+            }))
+          : []
+      );
     } catch (error) {
       console.error("Failed to fetch project", error);
+      setErrorMsg("Unable to fetch project details.");
     }
   };
 
@@ -84,23 +122,51 @@ export default function ProjectForm({ params }: { params: Promise<{ id: string }
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSwitchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({ ...prev, featured: e.target.checked }));
+  const addChapter = () => {
+    setVideoChapters((prev) => [...prev, { title: "", title_de: "", title_ar: "", url: "" }]);
+  };
+
+  const removeChapter = (index: number) => {
+    setVideoChapters((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const updateChapter = (index: number, field: keyof VideoChapterForm, value: string) => {
+    setVideoChapters((prev) =>
+      prev.map((ch, i) => (i === index ? { ...ch, [field]: value } : ch))
+    );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMsg("");
+
+    const splitLines = (raw: string) =>
+      raw
+        .split("\n")
+        .map((line) => line.trim())
+        .filter(Boolean);
 
     const payload = {
       ...formData,
-      description: formData.description.split("\n").filter((line) => line.trim() !== ""),
-      description_de: formData.description_de.split("\n").filter((line) => line.trim() !== ""),
-      description_ar: formData.description_ar.split("\n").filter((line) => line.trim() !== ""),
+      description: splitLines(formData.description),
+      description_de: splitLines(formData.description_de),
+      description_ar: splitLines(formData.description_ar),
+      highlights: splitLines(formData.highlights),
+      highlights_de: splitLines(formData.highlights_de),
+      highlights_ar: splitLines(formData.highlights_ar),
       tags: formData.tags
         .split(",")
         .map((tag) => tag.trim())
-        .filter((tag) => tag !== ""),
+        .filter(Boolean),
+      videoChapters: videoChapters
+        .map((ch) => ({
+          title: ch.title.trim(),
+          title_de: ch.title_de.trim(),
+          title_ar: ch.title_ar.trim(),
+          url: ch.url.trim(),
+        }))
+        .filter((ch) => ch.title && ch.url),
     };
 
     try {
@@ -116,9 +182,13 @@ export default function ProjectForm({ params }: { params: Promise<{ id: string }
       if (res.ok) {
         router.push("/admin/projects");
         router.refresh();
+        return;
       }
+      const data = await res.json();
+      setErrorMsg(data.error || "Failed to save project.");
     } catch (error) {
       console.error("Failed to save project", error);
+      setErrorMsg("Network error while saving project.");
     } finally {
       setLoading(false);
     }
@@ -134,6 +204,8 @@ export default function ProjectForm({ params }: { params: Promise<{ id: string }
           {isNew ? "Add New Project" : "Edit Project"}
         </Typography>
       </div>
+
+      {errorMsg && <Alert severity="error">{errorMsg}</Alert>}
 
       <Paper className="p-8 radius-lg">
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -174,6 +246,23 @@ export default function ProjectForm({ params }: { params: Promise<{ id: string }
             <TextField label="Description (Arabic)" name="description_ar" fullWidth multiline rows={4} dir="rtl" value={formData.description_ar} onChange={handleChange} />
           </div>
 
+          <Divider />
+          <Typography variant="h6">Highlights & Team Credits</Typography>
+
+          <TextField
+            label="Key Highlights (EN - one bullet per line)"
+            name="highlights"
+            fullWidth
+            multiline
+            rows={3}
+            value={formData.highlights}
+            onChange={handleChange}
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <TextField label="Highlights (DE)" name="highlights_de" fullWidth multiline rows={3} value={formData.highlights_de} onChange={handleChange} />
+            <TextField label="Highlights (AR)" name="highlights_ar" fullWidth multiline rows={3} dir="rtl" value={formData.highlights_ar} onChange={handleChange} />
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <TextField label="Credits / Team (EN)" name="credits" fullWidth value={formData.credits} onChange={handleChange} />
             <TextField label="Credits / Team (DE)" name="credits_de" fullWidth value={formData.credits_de} onChange={handleChange} />
@@ -190,10 +279,36 @@ export default function ProjectForm({ params }: { params: Promise<{ id: string }
             <TextField label="Live Site / Demo URL" name="demoUrl" fullWidth value={formData.demoUrl} onChange={handleChange} />
           </div>
 
+          <Divider />
+          <Typography variant="h6">Media, Demo Video & Branding</Typography>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormControl fullWidth>
+              <InputLabel>Demo Status</InputLabel>
+              <Select
+                value={formData.demoStatus}
+                label="Demo Status"
+                onChange={(e) => setFormData((prev) => ({ ...prev, demoStatus: e.target.value }))}
+              >
+                <MenuItem value="ready">Ready (Live Video / Interactive Demo)</MenuItem>
+                <MenuItem value="coming_soon">Coming Soon (Demo Upload Pending)</MenuItem>
+              </Select>
+            </FormControl>
+
+            <TextField
+              label="Brand Accent Color (Hex)"
+              name="brandColor"
+              fullWidth
+              value={formData.brandColor}
+              onChange={handleChange}
+              placeholder="#24423A"
+            />
+          </div>
+
           <div className="flex gap-4 items-end">
             <TextField
               fullWidth
-              label="Image URL"
+              label="Preview Image URL"
               value={formData.imageUrl}
               onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
             />
@@ -212,7 +327,26 @@ export default function ProjectForm({ params }: { params: Promise<{ id: string }
           <div className="flex gap-4 items-end">
             <TextField
               fullWidth
-              label="Video URL (Demo Video)"
+              label="Project Logo URL"
+              value={formData.logoUrl}
+              onChange={(e) => setFormData({ ...formData, logoUrl: e.target.value })}
+            />
+            <CloudinaryUploadButton
+              signatureEndpoint="/api/sign-cloudinary-params"
+              onSuccess={(result: unknown) => {
+                const url = (result as { info?: { secure_url?: string } })?.info?.secure_url;
+                if (url) setFormData((prev) => ({ ...prev, logoUrl: url }));
+              }}
+              className="bg-gray-200 hover:bg-gray-300 text-black px-4 py-3 rounded font-medium whitespace-nowrap"
+            >
+              Upload Logo
+            </CloudinaryUploadButton>
+          </div>
+
+          <div className="flex gap-4 items-end">
+            <TextField
+              fullWidth
+              label="Main Demo Video URL (MP4)"
               value={formData.videoUrl}
               onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })}
               helperText="Upload your project demo video to Cloudinary or paste a direct MP4 URL"
@@ -221,7 +355,7 @@ export default function ProjectForm({ params }: { params: Promise<{ id: string }
               signatureEndpoint="/api/sign-cloudinary-params"
               onSuccess={(result: unknown) => {
                 const url = (result as { info?: { secure_url?: string } })?.info?.secure_url;
-                if (url) setFormData((prev) => ({ ...prev, videoUrl: url }));
+                if (url) setFormData((prev) => ({ ...prev, videoUrl: url, demoStatus: "ready" }));
               }}
               className="bg-gray-200 hover:bg-gray-300 text-black px-4 py-3 rounded font-medium whitespace-nowrap"
             >
@@ -229,8 +363,84 @@ export default function ProjectForm({ params }: { params: Promise<{ id: string }
             </CloudinaryUploadButton>
           </div>
 
+          {/* Demo Video Chapters */}
+          <Box className="rounded-lg border border-gray-200 bg-gray-50 p-4 space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  Video Walkthrough Chapters (Optional)
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Add multiple walkthrough clips (e.g. Admin Panel, Ticket Checkout, Catalog Sync).
+                </Typography>
+              </div>
+              <Button type="button" size="small" variant="outlined" startIcon={<FaPlus />} onClick={addChapter}>
+                Add Chapter
+              </Button>
+            </div>
+
+            {videoChapters.map((ch, idx) => (
+              <div key={idx} className="p-3 bg-white rounded border border-gray-200 space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <TextField
+                    size="small"
+                    label="Chapter Title (EN)"
+                    value={ch.title}
+                    onChange={(e) => updateChapter(idx, "title", e.target.value)}
+                  />
+                  <TextField
+                    size="small"
+                    label="Title (DE)"
+                    value={ch.title_de}
+                    onChange={(e) => updateChapter(idx, "title_de", e.target.value)}
+                  />
+                  <TextField
+                    size="small"
+                    label="Title (AR)"
+                    dir="rtl"
+                    value={ch.title_ar}
+                    onChange={(e) => updateChapter(idx, "title_ar", e.target.value)}
+                  />
+                </div>
+                <div className="flex flex-wrap gap-2 items-center">
+                  <TextField
+                    size="small"
+                    label="Video URL"
+                    className="flex-1 min-w-[220px]"
+                    value={ch.url}
+                    onChange={(e) => updateChapter(idx, "url", e.target.value)}
+                  />
+                  <CloudinaryUploadButton
+                    signatureEndpoint="/api/sign-cloudinary-params"
+                    onSuccess={(result: unknown) => {
+                      const url = (result as { info?: { secure_url?: string } })?.info?.secure_url;
+                      if (url) updateChapter(idx, "url", url);
+                    }}
+                    className="bg-gray-200 hover:bg-gray-300 text-black px-3 py-2 rounded text-xs font-medium"
+                  >
+                    Upload Clip
+                  </CloudinaryUploadButton>
+                  <Button
+                    type="button"
+                    color="error"
+                    size="small"
+                    onClick={() => removeChapter(idx)}
+                  >
+                    <FaTrash />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </Box>
+
           <FormControlLabel
-            control={<Switch checked={formData.featured} onChange={handleSwitchChange} color="primary" />}
+            control={
+              <Switch
+                checked={formData.featured}
+                onChange={(e) => setFormData((prev) => ({ ...prev, featured: e.target.checked }))}
+                color="primary"
+              />
+            }
             label="Featured Project (Show on Home)"
           />
 

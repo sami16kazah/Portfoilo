@@ -1,8 +1,14 @@
-export default function AdminDashboard() {
-  return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
-      <p>Welcome to the admin panel.</p>
-    </div>
-  );
+import { redirect } from "next/navigation";
+import { requireAdmin } from "@/lib/apiUtils";
+import DashboardOverviewClient from "@/components/admin/DashboardOverviewClient";
+
+export const dynamic = "force-dynamic";
+
+export default async function AdminDashboardPage() {
+  const adminCheck = await requireAdmin();
+  if (!adminCheck.ok) {
+    redirect("/admin/login");
+  }
+
+  return <DashboardOverviewClient />;
 }
