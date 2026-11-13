@@ -39,6 +39,6 @@ export default auth((req) => {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|assets|robots\\.txt|sitemap\\.xml|llms\\.txt|llms-full\\.txt|manifest\\.webmanifest|opengraph-image|twitter-image|.*\\.(?:png|jpg|jpeg|webp|svg|ico|mp4)$).*)",
+    "/((?!api|_next/static|_next/image|assets|robots\\.txt|sitemap\\.xml|llms\\.txt|llms-full\\.txt|manifest\\.webmanifest|opengraph-image|twitter-image|google[a-z0-9]+\\.html|.*\\.(?:png|jpg|jpeg|webp|svg|ico|mp4|html)$).*)",
   ],
 };

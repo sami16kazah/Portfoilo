@@ -7,3 +7,4 @@ export const contentType = "image/png";
 export default function OpenGraphImage() {
   return createPortfolioOgImage();
 }
+

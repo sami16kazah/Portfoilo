@@ -7,7 +7,6 @@ import {
   FaGithub,
   FaPlayCircle,
   FaUsers,
-  FaLayerGroup,
   FaCheckCircle,
   FaVideo,
   FaBookOpen,
@@ -110,15 +109,12 @@ export default function ProjectShowcaseSection({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Heading */}
         <motion.div
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
+          initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.45 }}
-          className="max-w-3xl mb-10 space-y-3"
+          transition={{ duration: 0.4 }}
+          className="max-w-3xl mb-10 space-y-2.5"
         >
-          <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-indigo-300">
-            <FaLayerGroup aria-hidden="true" /> {t.projects.eyebrow}
-          </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             {t.projects.heading}
           </h2>
@@ -192,17 +188,28 @@ export default function ProjectShowcaseSection({
             transition={{ duration: 0.28 }}
             className="rounded-3xl bg-[#0D1322] border border-slate-700/80 overflow-hidden shadow-2xl"
           >
-            {/* Browser Frame Chrome */}
+            {/* Project Stage Top Bar */}
             <div className="px-4 sm:px-6 py-3.5 bg-[#080D1A] border-b border-slate-800 flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5" aria-hidden="true">
-                  <span className="h-3 w-3 rounded-full bg-rose-500/80" />
-                  <span className="h-3 w-3 rounded-full bg-amber-400/80" />
-                  <span className="h-3 w-3 rounded-full bg-emerald-400/80" />
-                </div>
-                <div className="px-3 py-1 rounded-lg bg-slate-900 border border-slate-700/70 text-xs font-mono text-slate-300 truncate max-w-[260px] sm:max-w-sm">
-                  {activeProject.demoUrl || `portfolio://projects/${title.toLowerCase().replace(/\s+/g, "-")}`}
-                </div>
+              <div className="flex items-center gap-3 min-w-0">
+                {activeProject.logoUrl && (
+                  <img
+                    src={activeProject.logoUrl}
+                    alt=""
+                    className="h-6 w-6 rounded object-contain shrink-0"
+                  />
+                )}
+                <span className="text-sm font-bold text-white truncate">{title}</span>
+                {activeProject.demoUrl && (
+                  <a
+                    href={activeProject.demoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700/70 text-xs font-mono text-slate-300 hover:text-white transition-colors"
+                  >
+                    <span>{activeProject.demoUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")}</span>
+                    <FaExternalLinkAlt size={9} aria-hidden="true" />
+                  </a>
+                )}
               </div>
 
               {/* Stage View Tabs */}

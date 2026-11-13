@@ -73,34 +73,23 @@ export default function HeroSection({ profile }: HeroSectionProps) {
   return (
     <section
       id="top"
-      className="relative min-h-[92vh] flex items-center pt-28 pb-16 overflow-hidden bg-grid-pattern"
+      className="relative min-h-[88vh] flex items-center pt-28 pb-16 overflow-hidden bg-grid-pattern"
     >
-      {/* Subtle GPU-friendly ambient radial lighting */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 w-[900px] h-[520px] rounded-full bg-indigo-600/20 blur-[130px]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute bottom-0 right-0 w-[520px] h-[420px] rounded-full bg-emerald-500/10 blur-[130px]"
-      />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Left Content */}
           <motion.div
-            initial={prefersReducedMotion ? false : { opacity: 0, y: 24 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, ease: "easeOut" }}
+            transition={{ duration: 0.45, ease: "easeOut" }}
             className="lg:col-span-7 space-y-6"
           >
             {/* Current job status pill */}
             <a
               href="#experience"
-              className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-emerald-200 text-sm font-medium hover:border-emerald-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-900/90 border border-slate-700/80 text-slate-200 text-sm font-medium hover:border-slate-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
             >
-              <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true" />
-              <FaBuilding className="text-emerald-300 text-xs" aria-hidden="true" />
+              <FaBuilding className="text-indigo-300 text-xs" aria-hidden="true" />
               <span>{t.hero.badge}</span>
             </a>
 
@@ -201,19 +190,15 @@ export default function HeroSection({ profile }: HeroSectionProps) {
             </div>
           </motion.div>
 
-          {/* Right Portrait & Company Bento Card */}
+          {/* Right Portrait & Company Card */}
           <motion.div
-            initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.94 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.08, ease: "easeOut" }}
             className="lg:col-span-5 flex justify-center lg:justify-end"
           >
             <div className="relative w-full max-w-sm">
-              <div
-                aria-hidden="true"
-                className="absolute -inset-1 rounded-3xl bg-gradient-to-tr from-indigo-500/40 via-cyan-400/20 to-emerald-400/40 blur-xl opacity-70"
-              />
-              <div className="relative rounded-3xl bg-[#0D1322] border border-slate-700/80 p-4 shadow-2xl">
+              <div className="relative rounded-3xl bg-[#0D1322] border border-slate-800 p-4 shadow-2xl">
                 <div className="relative aspect-[4/4.3] rounded-2xl overflow-hidden bg-slate-900 border border-slate-800">
                   <img
                     src={profile.avatarUrl || "/assets/images/sami.jpg"}

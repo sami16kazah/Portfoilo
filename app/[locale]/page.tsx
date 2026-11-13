@@ -29,3 +29,4 @@ export default async function LocalizedHomePage({ params }: LocalizedPageProps) 
 
   return <PortfolioPageContent locale={locale} canonicalPath={`/${locale}`} />;
 }
+

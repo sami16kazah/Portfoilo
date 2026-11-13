@@ -102,15 +102,12 @@ export default function ExperiencePerformanceSection({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Heading */}
         <motion.div
-          initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
+          initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.45 }}
-          className="max-w-3xl mb-14 space-y-3"
+          transition={{ duration: 0.4 }}
+          className="max-w-3xl mb-12 space-y-2.5"
         >
-          <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-cyan-300">
-            <FaBolt aria-hidden="true" /> {t.jobs.eyebrow}
-          </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             {t.jobs.heading}
           </h2>
@@ -174,8 +171,7 @@ export default function ExperiencePerformanceSection({
 
                     <div className="flex items-center gap-2.5">
                       {job.isCurrent && (
-                        <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-950 border border-emerald-500/50 text-emerald-200 text-xs font-bold">
-                          <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true" />
+                        <span className="inline-flex items-center px-3 py-1.5 rounded-xl bg-emerald-950 border border-emerald-600/50 text-emerald-200 text-xs font-bold">
                           {t.jobs.currentBadge}
                         </span>
                       )}
@@ -369,7 +365,7 @@ export default function ExperiencePerformanceSection({
                       {t.jobs.motionActive}
                     </div>
                     <p className="text-xs text-slate-300 leading-relaxed">
-                      {t.jobs.motionLabel}: zero full-section layout thrashing; GPU transforms only.
+                      {t.jobs.measureNote}
                     </p>
                   </div>
                 </div>
@@ -410,25 +406,12 @@ export default function ExperiencePerformanceSection({
                   return (
                     <motion.div
                       key={sIdx}
-                      initial={prefersReducedMotion ? false : { opacity: 0, x: -10 }}
+                      initial={prefersReducedMotion ? false : { opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: sIdx * 0.08 }}
-                      className="relative rounded-2xl bg-[#080D1A] border border-slate-800 p-3.5 flex items-center gap-3.5 overflow-hidden"
+                      transition={{ delay: sIdx * 0.06 }}
+                      className="rounded-2xl bg-[#080D1A] border border-slate-800 hover:border-slate-700 p-3.5 flex items-center gap-3.5 transition-colors"
                     >
-                      {!prefersReducedMotion && (
-                        <motion.div
-                          aria-hidden="true"
-                          className="absolute inset-y-0 w-16 bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent"
-                          animate={{ x: ["-100%", "400%"] }}
-                          transition={{
-                            duration: 2.8,
-                            repeat: Infinity,
-                            delay: sIdx * 0.4,
-                            ease: "linear",
-                          }}
-                        />
-                      )}
-                      <span className="h-9 w-9 rounded-xl bg-indigo-950 border border-indigo-500/40 text-indigo-200 flex items-center justify-center shrink-0">
+                      <span className="h-9 w-9 rounded-xl bg-slate-900 border border-slate-700 text-cyan-300 flex items-center justify-center shrink-0">
                         <Icon size={14} aria-hidden="true" />
                       </span>
                       <div className="min-w-0">

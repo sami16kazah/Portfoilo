@@ -85,8 +85,7 @@ export default function Navbar() {
           {/* Right controls */}
           <div className="flex items-center gap-2.5">
             {berlinTime && (
-              <span className="hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-700/70 text-xs font-mono text-slate-200">
-                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true" />
+              <span className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/80 border border-slate-800 text-xs font-mono text-slate-300">
                 <span>DE {berlinTime}</span>
               </span>
             )}

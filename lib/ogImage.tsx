@@ -136,3 +136,4 @@ export function createPortfolioOgImage() {
     OG_IMAGE_SIZE
   );
 }
+

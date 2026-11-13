@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
-  FaImages,
   FaEnvelope,
   FaPaperPlane,
   FaCopy,
@@ -132,10 +131,7 @@ export default function GalleryContactSection({
       {photos.length > 0 && (
         <section id="gallery" className="py-24 bg-[#060911] border-t border-slate-800/80">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-3xl mb-12 space-y-2">
-              <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-indigo-300">
-                <FaImages aria-hidden="true" /> {t.gallery.eyebrow}
-              </span>
+            <div className="max-w-3xl mb-10">
               <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
                 {t.gallery.heading}
               </h2>
@@ -236,9 +232,6 @@ export default function GalleryContactSection({
             {/* Left Info */}
             <div className="lg:col-span-5 space-y-6">
               <div className="space-y-2">
-                <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-indigo-300">
-                  <FaEnvelope aria-hidden="true" /> {t.contact.eyebrow}
-                </span>
                 <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
                   {t.contact.heading}
                 </h2>
@@ -321,7 +314,7 @@ export default function GalleryContactSection({
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Sami Kazah"
+                    placeholder={t.contact.namePlaceholder}
                     className="w-full px-4 py-3 rounded-xl bg-[#070B14] border border-slate-700 text-white placeholder:text-slate-400 text-sm focus:outline-none focus:border-indigo-400"
                   />
                 </label>
@@ -345,7 +338,7 @@ export default function GalleryContactSection({
                   type="text"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  placeholder="Project / Collaboration"
+                  placeholder={t.contact.subjectPlaceholder}
                   className="w-full px-4 py-3 rounded-xl bg-[#070B14] border border-slate-700 text-white placeholder:text-slate-400 text-sm focus:outline-none focus:border-indigo-400"
                 />
               </label>
@@ -441,12 +434,12 @@ export default function GalleryContactSection({
       </section>
 
       {/* Footer */}
-      <footer className="py-10 bg-[#05080F] border-t border-slate-800/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-300">
+      <footer className="py-8 bg-[#05080F] border-t border-slate-800/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-300">
           <p>
-            © {new Date().getFullYear()} {profile.name || "Sami Kazah"} ({profile.name_ar || "سامي قزح"}). {t.footer.rights}
+            © {new Date().getFullYear()} {profile.name || "Sami Kazah"}. {t.footer.rights}
           </p>
-          <nav aria-label="Language and Crawler Links" className="flex flex-wrap items-center gap-4 text-xs text-slate-300">
+          <nav aria-label="Language versions" className="flex flex-wrap items-center gap-4 text-xs text-slate-300">
             <Link href="/en" className="hover:text-white underline-offset-4 hover:underline">
               English
             </Link>
@@ -456,15 +449,7 @@ export default function GalleryContactSection({
             <Link href="/ar" lang="ar" dir="rtl" className="hover:text-white underline-offset-4 hover:underline">
               العربية
             </Link>
-            <span className="text-slate-600" aria-hidden="true">|</span>
-            <a href="/llms.txt" className="hover:text-white underline-offset-4 hover:underline">
-              llms.txt
-            </a>
-            <a href="/sitemap.xml" className="hover:text-white underline-offset-4 hover:underline">
-              sitemap.xml
-            </a>
           </nav>
-          <p className="text-xs text-slate-400">{t.footer.builtWith}</p>
         </div>
       </footer>
     </>

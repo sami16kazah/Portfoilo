@@ -35,10 +35,7 @@ export default function CredentialsSection({
       {(education.length > 0 || certifications.length > 0) && (
         <section id="education" className="py-24 bg-[#060911] border-t border-slate-800/80">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-3xl mb-12 space-y-2">
-              <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber-300">
-                <FaGraduationCap aria-hidden="true" /> {t.education.eyebrow}
-              </span>
+            <div className="max-w-3xl mb-10">
               <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
                 {t.education.heading}
               </h2>
@@ -138,10 +135,7 @@ export default function CredentialsSection({
       {books.length > 0 && (
         <section id="books" className="py-24 bg-[#070B14] border-t border-slate-800/80">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-3xl mb-12 space-y-2">
-              <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-cyan-300">
-                <FaBook aria-hidden="true" /> {t.books.eyebrow}
-              </span>
+            <div className="max-w-3xl mb-10">
               <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
                 {t.books.heading}
               </h2>
