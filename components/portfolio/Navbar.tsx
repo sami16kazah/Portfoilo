@@ -63,9 +63,11 @@ export default function Navbar() {
             href="#top"
             className="flex items-center gap-3 text-slate-50 font-bold tracking-tight text-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 rounded-lg px-1"
           >
-            <span className="h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-500 to-cyan-400 text-slate-950 font-extrabold flex items-center justify-center text-sm shadow-lg shadow-indigo-500/25">
-              SK
-            </span>
+            <img
+              src="/assets/images/sami.jpg"
+              alt="Sami Kazah"
+              className="h-9 w-9 rounded-xl object-cover object-top border border-slate-700/80 shrink-0"
+            />
             <span className="hidden sm:inline">Sami Kazah</span>
           </a>
 

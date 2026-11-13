@@ -1,8 +1,21 @@
 import { ImageResponse } from "next/og";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 
 export const OG_IMAGE_SIZE = { width: 1200, height: 630 };
 
+function getAvatarDataUri(): string | null {
+  try {
+    const filePath = path.join(process.cwd(), "public", "assets", "images", "sami.jpg");
+    const buffer = readFileSync(filePath);
+    return `data:image/jpeg;base64,${buffer.toString("base64")}`;
+  } catch {
+    return null;
+  }
+}
+
 export function createPortfolioOgImage() {
+  const avatarDataUri = getAvatarDataUri();
   return new ImageResponse(
     (
       <div
@@ -28,22 +41,19 @@ export function createPortfolioOgImage() {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "18px" }}>
-            <div
-              style={{
-                width: "60px",
-                height: "60px",
-                borderRadius: "16px",
-                background: "linear-gradient(135deg, #6366F1 0%, #22D3EE 100%)",
-                color: "#020617",
-                fontSize: "26px",
-                fontWeight: 900,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              SK
-            </div>
+            {avatarDataUri && (
+              <img
+                src={avatarDataUri}
+                alt="Sami Kazah"
+                width={64}
+                height={64}
+                style={{
+                  borderRadius: "16px",
+                  objectFit: "cover",
+                  border: "1px solid #334155",
+                }}
+              />
+            )}
             <div style={{ display: "flex", flexDirection: "column" }}>
               <span style={{ fontSize: "20px", fontWeight: 700, color: "#E2E8F0" }}>
                 Sami Kazah

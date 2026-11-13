@@ -17,9 +17,9 @@ export default function manifest(): MetadataRoute.Manifest {
         type: "image/x-icon",
       },
       {
-        src: "/assets/projects/shelforia-logo.svg",
-        sizes: "any",
-        type: "image/svg+xml",
+        src: "/assets/images/sami.jpg",
+        sizes: "800x800",
+        type: "image/jpeg",
       },
     ],
   };
