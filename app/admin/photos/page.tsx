@@ -5,7 +5,7 @@ import {
   Box, Typography, Button, TextField, Grid, Card, CardMedia, IconButton, Container 
 } from "@mui/material";
 import { FaTrash, FaPlus } from "react-icons/fa";
-import { CldUploadButton } from "next-cloudinary";
+import CloudinaryUploadButton from "@/components/admin/CloudinaryUploadButton";
 
 interface Photo {
   _id: string;
@@ -73,13 +73,13 @@ export default function PhotosPage() {
        <div className="flex justify-between items-center">
         <Typography variant="h4" fontWeight="bold">Photo Gallery</Typography>
         <div className="bg-black text-white px-4 py-2 rounded shadow hover:bg-gray-800 transition cursor-pointer">
-           <CldUploadButton 
+           <CloudinaryUploadButton 
               signatureEndpoint="/api/sign-cloudinary-params"
               onSuccess={handleUpload}
               className="flex items-center gap-2 font-medium"
             >
               <FaPlus /> Upload Photo
-            </CldUploadButton>
+            </CloudinaryUploadButton>
         </div>
       </div>
 

@@ -5,7 +5,7 @@ import { useLocale } from "@/app/context/LocalContext";
 export default function CertificationsCard() {
   const { t } = useLocale();
   return (
-    <Card title={t.education}>
+    <Card title={t.educationWord}>
       <TimeLine>
         <TimeLineItem
           date={"2017-2024"}

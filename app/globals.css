@@ -2,110 +2,61 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: #060911;
+}
+
 body {
-  background: #000;
+  background-color: #060911;
+  color: #f8fafc;
+  overflow-x: hidden;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-  .before-content-none::before {
-    content: "";
+  .bg-grid-pattern {
+    background-image: linear-gradient(
+        to right,
+        rgba(148, 163, 184, 0.06) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        rgba(148, 163, 184, 0.06) 1px,
+        transparent 1px
+      );
+    background-size: 48px 48px;
   }
 }
 
-/*---Fancy button---*/
-.fancy-btn {
-  background-image: linear-gradient(
-    135deg,
-    #00d372,
-    #56acff 34%,
-    #7179ef 67%,
-    #d87cac
-  );
-  border-radius: 100em;
-  padding: 0.2vw;
-  max-width: 100%;
-  display: inline-block;
-}
-/*---Bottom fade---*/
-.bottom_fade {
-  background-image: linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0) 20.1275%,
-    rgba(255, 255, 255) 100%
-  );
-}
-/*---Svg curve---*/
-.line {
-  height: 1px;
-  position: relative;
-
-  width: 100%;
-
-  margin-bottom: 20px;
+/* Custom accessible scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
 }
 
-.line svg {
-  position: absolute;
-
-  height: 100px;
-
-  width: 100%;
-
-  top: -50px;
+::-webkit-scrollbar-track {
+  background: #060911;
 }
 
-.line svg path {
-  stroke-width: 1px;
-
-  stroke: white;
-
-  fill: none;
+::-webkit-scrollbar-thumb {
+  background: #27344d;
+  border-radius: 9999px;
+  border: 2px solid #060911;
 }
 
-.box {
-  height: 40px;
-
-  width: 100%;
-
-  display: flex;
-
-  position: relative;
-
-  top: -20px;
-
-  z-index: 1;
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
 }
 
-/* swipper */
-
-.swiper{
-  width: 100%;
-  height: 100%;
-}
-
-.swiper-slide {
-  background: #fff;
-}
-.swiper-pagination{
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 50px !important;
-  width: fit-content !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  backdrop-filter: blur(4px) !important;
-  padding:0px 3px 0px 3px !important;
-  height: 20px !important;
-  display: flex;
-  align-items: center;
-}
-
-.swiper-pagination-bullet{
-  width: 6px !important;
-  height: 6px !important;
-}
-.swiper-pagination-bullet-active{
-  background: #fff !important;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }

@@ -1,4 +1,6 @@
+import { NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
+import { auth } from "@/auth";
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -7,13 +9,29 @@ cloudinary.config({
 });
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  const { paramsToSign } = body;
+  try {
+    const session = await auth();
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-  const signature = cloudinary.utils.api_sign_request(
-    paramsToSign,
-    process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET as string
-  );
+    const apiSecret = process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET;
+    if (!apiSecret) {
+      return NextResponse.json(
+        { error: "Cloudinary is not configured." },
+        { status: 500 }
+      );
+    }
 
-  return Response.json({ signature });
+    const body = await request.json();
+    const { paramsToSign } = body;
+
+    const signature = cloudinary.utils.api_sign_request(paramsToSign, apiSecret);
+    return Response.json({ signature });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to sign Cloudinary parameters" },
+      { status: 500 }
+    );
+  }
 }

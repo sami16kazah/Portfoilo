@@ -14,30 +14,22 @@ import Img12 from "@/public/assets/stack/Unreal Engine.png";
 import Img13 from "@/public/assets/stack/react.png";
 import Img14 from "@/public/assets/stack/Next.js.png";
 import Img15 from "@/public/assets/stack/Spring.png";
-import { title } from "process";
 
 export const StackData = [
-    { id: 2, img: Img2 ,title:"Basics"},
-  { id: 3, img: Img3 ,title:"Basics"},
-  { id:4, img: Img4 ,title:"Basics"},
-  { id: 0, img: Img0 ,title:"Programming Languages"},
-  { id: 1, img: Img1 ,title:"Programming Languages"},
-
-
-  { id: 6, img: Img6 ,title:"BackEnd FreamWorks"},
-
-    { id: 11, img: Img11 ,title:"Programming Languages"},
-   
-      { id: 13, img: Img13 ,title:"FrontEnd FreamWorks"},
-       { id: 14, img: Img14 ,title:"FrontEnd FreamWorks"},
-        { id: 15, img: Img15,title:"BackEnd FreamWorks"},
-          { id: 7, img: Img7 ,title:"Styling Libraries"},
-
-  { id: 10, img: Img10 ,title:"Styling Libraries"},
-
-            { id: 5, img: Img5 ,title:"DataBase"},
-            { id: 8, img: Img8 ,title:"DataBase"},
-  { id: 9, img: Img9 ,title:"DataBase"},
-            { id: 12, img: Img12 ,title:"Game Engine"},
-  
+  { id: 2, img: Img2, title: "Basics" },
+  { id: 3, img: Img3, title: "Basics" },
+  { id: 4, img: Img4, title: "Basics" },
+  { id: 0, img: Img0, title: "Programming Languages" },
+  { id: 1, img: Img1, title: "Programming Languages" },
+  { id: 6, img: Img6, title: "Backend Frameworks" },
+  { id: 11, img: Img11, title: "Programming Languages" },
+  { id: 13, img: Img13, title: "Frontend Frameworks" },
+  { id: 14, img: Img14, title: "Frontend Frameworks" },
+  { id: 15, img: Img15, title: "Backend Frameworks" },
+  { id: 7, img: Img7, title: "Styling Libraries" },
+  { id: 10, img: Img10, title: "Styling Libraries" },
+  { id: 5, img: Img5, title: "Database" },
+  { id: 8, img: Img8, title: "Database" },
+  { id: 9, img: Img9, title: "Database" },
+  { id: 12, img: Img12, title: "Game Engine" },
 ];

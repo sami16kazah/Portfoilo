@@ -6,7 +6,7 @@ import {
   Grid, Divider, IconButton, MenuItem, Select, FormControl, InputLabel
 } from "@mui/material";
 import { FaSave, FaUserCircle, FaTrash, FaPlus } from "react-icons/fa";
-import { CldUploadButton } from "next-cloudinary";
+import CloudinaryUploadButton from "@/components/admin/CloudinaryUploadButton";
 
 export default function ProfilePage() {
   const [loading, setLoading] = useState(false);
@@ -140,13 +140,13 @@ export default function ProfilePage() {
                       <FaUserCircle className="w-full h-full text-gray-300" />
                     )}
                  </div>
-                 <CldUploadButton 
+                 <CloudinaryUploadButton 
                     signatureEndpoint="/api/sign-cloudinary-params"
                     onSuccess={(result) => handleUploadSuccess(result, 'avatarUrl')}
                     className="text-sm text-blue-600 hover:underline"
                  >
                     Upload Photo
-                 </CldUploadButton>
+                 </CloudinaryUploadButton>
              </div>
              
              <div className="flex-1 space-y-6">
@@ -378,13 +378,13 @@ export default function ProfilePage() {
                 value={formData.cvUrl}
                 onChange={handleChange}
               />
-               <CldUploadButton 
+               <CloudinaryUploadButton 
                     signatureEndpoint="/api/sign-cloudinary-params"
                     onSuccess={(result) => handleUploadSuccess(result, 'cvUrl')}
                     className="px-4 py-3 bg-gray-200 rounded hover:bg-gray-300 whitespace-nowrap"
                  >
                     Upload CV
-                 </CldUploadButton>
+                 </CloudinaryUploadButton>
           </div>
 
           <Button 

@@ -1,26 +1,28 @@
 import type { Metadata } from "next";
-import {
-  Inter,
-  Bricolage_Grotesque,
-  Oswald,
-  Pixelify_Sans,
-} from "next/font/google";
+import { Bricolage_Grotesque, Oswald, Pixelify_Sans } from "next/font/google";
 import "./globals.css";
 import { cn } from "../lib/util";
-import GrainEFfect from "@/components/visualEffects/GrainEffects";
-import { Cursor } from "@/components/cursor/Curosr";
 import { LocaleProvider } from "@/app/context/LocalContext";
 
-const inter = Inter({ subsets: ["latin"] });
-const MainFont = Bricolage_Grotesque({ subsets: ["latin"] });
-const OswaldFont = Oswald({ subsets: ["latin"], variable: "--font-oswald" });
+const MainFont = Bricolage_Grotesque({
+  subsets: ["latin"],
+  display: "swap",
+});
+const OswaldFont = Oswald({
+  subsets: ["latin"],
+  variable: "--font-oswald",
+  display: "swap",
+});
 const PixelFont = Pixelify_Sans({
   subsets: ["latin"],
-  variable: "--font-pixel)",
+  variable: "--font-pixel",
+  display: "swap",
 });
+
 export const metadata: Metadata = {
-  title: "Sami Kazah",
-  description: "Sami Kazah Official Portfoilo",
+  title: "Sami Kazah — Software & Full-Stack Engineer",
+  description:
+    "Portfolio of Sami Kazah — Software Engineer at cloudvibe GmbH & co-developer of shelforia.de.",
 };
 
 export default function RootLayout({
@@ -29,18 +31,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="scroll-smooth">
       <body
         className={cn(
           MainFont.className,
           OswaldFont.variable,
-          PixelFont.variable
+          PixelFont.variable,
+          "bg-[#060911] text-slate-50 antialiased selection:bg-indigo-500 selection:text-white"
         )}
       >
-        <GrainEFfect></GrainEFfect>
-        {/*  <Cursor color="white"></Cursor>  */}
-        <LocaleProvider> {children}</LocaleProvider>
-        <div className="modal-container"></div>
+        <LocaleProvider>{children}</LocaleProvider>
+        <div className="modal-container" />
       </body>
     </html>
   );

@@ -7,7 +7,7 @@ import {
   Slider, MenuItem, Select, InputLabel, FormControl 
 } from "@mui/material";
 import { FaSave, FaArrowLeft } from "react-icons/fa";
-import { CldUploadButton } from "next-cloudinary";
+import CloudinaryUploadButton from "@/components/admin/CloudinaryUploadButton";
 
 export default function SkillForm({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -113,13 +113,13 @@ export default function SkillForm({ params }: { params: Promise<{ id: string }> 
                onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
                helperText="Check react-icons.github.io or Upload Image"
              />
-              <CldUploadButton 
+              <CloudinaryUploadButton 
                  signatureEndpoint="/api/sign-cloudinary-params" 
                  onSuccess={(result: any) => setFormData({...formData, icon: result?.info?.secure_url})}
                  className="bg-gray-200 hover:bg-gray-300 text-black px-4 py-3 rounded font-medium whitespace-nowrap mb-6"
               >
                  Upload
-              </CldUploadButton>
+              </CloudinaryUploadButton>
           </div>
 
           <Box>

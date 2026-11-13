@@ -1,38 +1,30 @@
 "use client";
-import React, { FC } from "react";
-import "swiper/css";
-import "swiper/css/pagination";
-import { Pagination, Autoplay } from "swiper/modules";
-import { SwiperSlide, Swiper } from "swiper/react";
-import Image from "next/image";
+import React from "react";
 
-interface ProjectsGalleryProps {
-  galleryImages: { id: number; img: string }[];
+interface GalleryImage {
+  id: number;
+  img: string;
 }
 
-export const ProjectsGallery: FC<ProjectsGalleryProps> = ({
+export const ProjectsGallery = ({
   galleryImages,
+}: {
+  galleryImages: GalleryImage[];
 }) => {
   return (
-    <div className="h-[550px] sm:h-[650px] md:h-full 2xl:h-[750px] w-full">
-      <Swiper
-        modules={[Pagination, Autoplay]}
-        pagination={{ clickable: true }}
-        autoplay={{ delay: 2500, disableOnInteraction: false }}
-        className="mySwiper rounded-2xl h-full"
-      >
-        {galleryImages.map((image, i) => (
-          <SwiperSlide key={i} className="relative w-full h-full">
-            <Image
-              src={image.img}
-              alt="no"
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-contain h-full w-full object-center bg-black"
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+      {galleryImages.map((image, i) => (
+        <div
+          key={image.id ?? i}
+          className="rounded-2xl overflow-hidden border border-slate-800 bg-slate-900"
+        >
+          <img
+            src={image.img}
+            alt={`Project screenshot ${i + 1}`}
+            className="object-cover h-full w-full"
+          />
+        </div>
+      ))}
     </div>
   );
 };

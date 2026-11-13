@@ -5,7 +5,7 @@ import {
   Box, Typography, Button, TextField, Paper 
 } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { CldUploadButton } from "next-cloudinary";
+import CloudinaryUploadButton from "@/components/admin/CloudinaryUploadButton";
 import { FaImage } from "react-icons/fa";
 
 export default function BookForm({ params }: { params: Promise<{ id: string }> }) {
@@ -76,13 +76,13 @@ export default function BookForm({ params }: { params: Promise<{ id: string }> }
                    <FaImage className="text-gray-400 text-3xl" />
                 )}
                  <div className="absolute inset-0 opacity-0 hover:opacity-100 bg-black/50 flex items-center justify-center transition-opacity cursor-pointer">
-              <CldUploadButton 
+              <CloudinaryUploadButton 
                  signatureEndpoint="/api/sign-cloudinary-params"
                  onSuccess={(result: any) => setFormData({...formData, coverUrl: result?.info?.secure_url})}
                  className="text-white text-xs font-bold w-full h-full flex items-center justify-center p-4"
               >
                  Upload Cover
-              </CldUploadButton>
+              </CloudinaryUploadButton>
                  </div>
              </div>
           </div>

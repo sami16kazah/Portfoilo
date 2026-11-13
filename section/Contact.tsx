@@ -73,7 +73,7 @@ export default function ContactSection() {
 
   return (
     <div className="pt-24 px-3 lg:px-8">
-      <Heading number="05" title_1={t.contact} title_2={t.me} />
+      <Heading number="05" title_1={t.contactWord} title_2={t.me} />
       <Card>
         <div className="grid gap-8 grid-cols-1 lg:grid-cols-3">
           {/* Left side */}
