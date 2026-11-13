@@ -8,6 +8,7 @@ import ExperiencePerformanceSection from "@/components/portfolio/ExperiencePerfo
 import ProjectShowcaseSection from "@/components/portfolio/ProjectShowcaseSection";
 import SkillsSection from "@/components/portfolio/SkillsSection";
 import CredentialsSection from "@/components/portfolio/CredentialsSection";
+import BooksShowcaseSection from "@/components/portfolio/BooksShowcaseSection";
 import GalleryContactSection from "@/components/portfolio/GalleryContactSection";
 import {
   BookData,
@@ -58,8 +59,8 @@ export default function ClientHome({
         <CredentialsSection
           education={education}
           certifications={certifications}
-          books={books}
         />
+        <BooksShowcaseSection books={books} />
         <GalleryContactSection photos={photos} profile={profile} />
       </main>
     </div>

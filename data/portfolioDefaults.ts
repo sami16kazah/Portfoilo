@@ -361,10 +361,21 @@ export const DEFAULT_BOOKS = [
     title: "Design Patterns in Arabic",
     title_de: "Design Patterns auf Arabisch",
     title_ar: "أنماط التصميم (Design Patterns) باللغة العربية",
-    description: "Practical software architecture & GoF design patterns guide (7,000+ downloads).",
-    description_de: "Praxisleitfaden für Softwarearchitektur & Entwurfsmuster (7.000+ Downloads).",
-    description_ar: "دليل عملي لهندسة البرمجيات وأنماط التصميم البرمجية (أكثر من 7 آلاف تحميل).",
+    subtitle: "Software Architecture & GoF Patterns",
+    subtitle_de: "Softwarearchitektur & GoF-Entwurfsmuster",
+    subtitle_ar: "دليل أنماط التصميم البرمجية مع تطبيقات عملية بلغة Java",
+    description:
+      "Practical guide covering key Gang-of-Four software design patterns, architectural trade-offs, and practical Java examples for writing maintainable object-oriented systems.",
+    description_de:
+      "Praxisleitfaden zu den bekanntesten Gang-of-Four-Entwurfsmustern, Architekturentscheidungen und konkreten Java-Beispielen für wartbare Softwaresysteme.",
+    description_ar:
+      "يقدّم شرحاً وافياً لأشهر أنماط التصميم (Design Patterns) المختلفة، والسياقات التي تستدعي استخدامها لمعالجة التحديات البرمجية، مع أمثلة وتطبيقات عملية بلغة Java لتعزيز الفهم.",
     link: "https://www.kotobati.com/book/design-patterns-arabic",
+    libraryLinks: [
+      { name: "Kotobati", url: "https://www.kotobati.com/book/design-patterns-arabic" },
+    ],
+    topics: ["Design Patterns", "Java", "OOP", "Architecture"],
+    downloadsLabel: "7,000+ downloads",
     coverUrl: "",
   },
   {
@@ -372,10 +383,24 @@ export const DEFAULT_BOOKS = [
     title: "Compilers Using ANTLR in Arabic",
     title_de: "Compilerbau mit ANTLR auf Arabisch",
     title_ar: "كتاب المترجمات باستخدام الـ ANTLR",
-    description: "Hands-on compiler construction, lexers, parsers, and ASTs (6,000+ downloads).",
-    description_de: "Praxisnahe Einführung in Compilerbau, Lexer, Parser & ASTs (6.000+ Downloads).",
-    description_ar: "مقدمة تطبيقية لبناء المترجمات والتحليل النحوي (أكثر من 6 آلاف تحميل).",
+    subtitle: "Lexers, Parsers & AST Engineering",
+    subtitle_de: "Lexer, Parser & AST-Entwicklung",
+    subtitle_ar: "دليل مخصص لطلاب الهندسة المعلوماتية في بناء المترجمات",
+    description:
+      "Hands-on compiler construction guide for Computer Science & Informatics students explaining lexical analysis, parsing, grammars, and AST execution with ANTLR.",
+    description_de:
+      "Praxisnahe Einführung für Informatikstudierende in den Compilerbau mit Lexer, Parser, Grammatiken und AST-Verarbeitung mithilfe von ANTLR.",
+    description_ar:
+      "دليل مخصص لطلاب كلية الهندسة المعلوماتية يشرح كيفية بناء مترجمات لغات البرمجة باستخدام أداة ANTLR، مع التركيز على المفاهيم النظرية والتطبيق العملي.",
     link: "https://www.kotobati.com/book/%D9%83%D8%AA%D8%A7%D8%A8-%D8%A7%D9%84%D9%85%D8%AA%D8%B1%D8%AC%D9%85%D8%A7%D8%AA-%D8%A8%D8%A7%D8%B3%D8%AA%D8%AE%D8%AF%D8%A7%D9%85-%D8%A7%D9%84-antlr",
+    libraryLinks: [
+      {
+        name: "Kotobati",
+        url: "https://www.kotobati.com/book/%D9%83%D8%AA%D8%A7%D8%A8-%D8%A7%D9%84%D9%85%D8%AA%D8%B1%D8%AC%D9%85%D8%A7%D8%AA-%D8%A8%D8%A7%D8%B3%D8%AA%D8%AE%D8%AF%D8%A7%D9%85-%D8%A7%D9%84-antlr",
+      },
+    ],
+    topics: ["Compilers", "ANTLR", "Grammars", "AST"],
+    downloadsLabel: "6,000+ downloads",
     coverUrl: "",
   },
   {
@@ -383,10 +408,24 @@ export const DEFAULT_BOOKS = [
     title: "Islam and Terrorism (Comparative Studies)",
     title_de: "Islam und Terrorismus (Studie)",
     title_ar: "كتاب الإسلام والإرهاب",
-    description: "Published analytical book in religious & cultural studies (5,000+ downloads).",
-    description_de: "Veröffentlichtes Fachbuch im Bereich Religions- und Kulturstudien (5.000+ Downloads).",
-    description_ar: "كتاب تحليلي منشور في الدراسات الدينية والفكرية (أكثر من 5 آلاف تحميل).",
+    subtitle: "Analytical & Comparative Studies",
+    subtitle_de: "Analytische & vergleichende Studie",
+    subtitle_ar: "دراسة تحليلية وفكرية مقارنة",
+    description:
+      "Published analytical book in religious and cultural studies exploring historical sources, conceptual distinctions, and comparative arguments.",
+    description_de:
+      "Veröffentlichtes Fachbuch im Bereich Religions- und Kulturstudien mit historischer Einordnung und vergleichender Textanalyse.",
+    description_ar:
+      "كتاب تحليلي منشور في الدراسات الدينية والفكرية يستعرض السياق التاريخي والمفاهيم المقارنة بأسلوب بحثي.",
     link: "https://www.kotobati.com/book/%D9%83%D8%AA%D8%A7%D8%A8-%D8%A7%D9%84%D8%A5%D8%B3%D9%84%D8%A7%D9%85-%D9%88%D8%A7%D9%84%D8%A5%D8%B1%D9%87%D8%A7%D8%A8",
+    libraryLinks: [
+      {
+        name: "Kotobati",
+        url: "https://www.kotobati.com/book/%D9%83%D8%AA%D8%A7%D8%A8-%D8%A7%D9%84%D8%A5%D8%B3%D9%84%D8%A7%D9%85-%D9%88%D8%A7%D9%84%D8%A5%D8%B1%D9%87%D8%A7%D8%A8",
+      },
+    ],
+    topics: ["Research", "Comparative Studies"],
+    downloadsLabel: "5,000+ downloads",
     coverUrl: "",
   },
 ];

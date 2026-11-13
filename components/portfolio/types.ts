@@ -134,16 +134,76 @@ export interface CertificationData {
   link?: string;
 }
 
+export interface BookLibraryLink {
+  name: string;
+  url: string;
+}
+
 export interface BookData {
   _id: string;
   title: string;
   title_de?: string;
   title_ar?: string;
+  subtitle?: string;
+  subtitle_de?: string;
+  subtitle_ar?: string;
   coverUrl?: string;
   link?: string;
+  libraryLinks?: BookLibraryLink[];
+  topics?: string[];
+  downloadsLabel?: string;
   description?: string;
   description_de?: string;
   description_ar?: string;
+}
+
+/**
+ * Infers a readable digital library name from a book's publishing URL.
+ */
+export function inferLibraryName(url: string): string {
+  try {
+    const host = new URL(url).hostname.replace(/^www\./, "").toLowerCase();
+    if (host.includes("kotobati")) return "Kotobati";
+    if (host.includes("noor-book") || host.includes("noorbook")) return "Noor Book";
+    if (host.includes("foulabook")) return "Foulabook";
+    if (host.includes("ketabpedia")) return "Ketabpedia";
+    if (host.includes("books.google")) return "Google Books";
+    if (host.includes("amazon")) return "Amazon";
+    if (host.includes("archive.org")) return "Internet Archive";
+    if (host.includes("github.com")) return "GitHub";
+    return host;
+  } catch {
+    return "External Library";
+  }
+}
+
+/**
+ * Returns deduplicated library links for a book, falling back gracefully to legacy `book.link`.
+ */
+export function getBookLibraryLinks(book: BookData): BookLibraryLink[] {
+  const result: BookLibraryLink[] = [];
+  const seen = new Set<string>();
+
+  for (const item of book.libraryLinks || []) {
+    const cleanUrl = (item.url || "").trim();
+    const cleanName = (item.name || "").trim();
+    if (!cleanUrl || seen.has(cleanUrl)) continue;
+    seen.add(cleanUrl);
+    result.push({
+      name: cleanName || inferLibraryName(cleanUrl),
+      url: cleanUrl,
+    });
+  }
+
+  const legacyUrl = (book.link || "").trim();
+  if (legacyUrl && !seen.has(legacyUrl)) {
+    result.unshift({
+      name: inferLibraryName(legacyUrl),
+      url: legacyUrl,
+    });
+  }
+
+  return result;
 }
 
 export interface PhotoData {

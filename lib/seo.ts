@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { getLocalizedList, getLocalizedText } from "@/components/portfolio/types";
+import { getBookLibraryLinks, getLocalizedList, getLocalizedText } from "@/components/portfolio/types";
 import type { PortfolioData } from "@/lib/portfolioData";
 
 export const SUPPORTED_LOCALES = ["en", "de", "ar"] as const;
@@ -249,7 +249,7 @@ export function buildStructuredDataJsonLd(
         data.profile.socialLinks?.instagram,
         "https://cloudvibe.de/",
         "https://shelforia.de/",
-        ...data.books.map((b) => b.link),
+        ...data.books.flatMap((b) => getBookLibraryLinks(b).map((l) => l.url)),
       ].filter((url): url is string => Boolean(url && url.startsWith("http")))
     )
   );
@@ -360,15 +360,19 @@ export function buildStructuredDataJsonLd(
         : undefined,
       keywords: (proj.tags || []).join(", "),
     })),
-    ...data.books.map((book) => ({
-      "@type": "Book",
-      name: book.title,
-      alternateName: [book.title_ar, book.title_de].filter(Boolean),
-      inLanguage: "ar",
-      url: book.link || undefined,
-      description: getLocalizedText(book, "description", locale, book.description || ""),
-      author: { "@id": personId },
-    })),
+    ...data.books.map((book) => {
+      const libraries = getBookLibraryLinks(book);
+      return {
+        "@type": "Book",
+        name: book.title,
+        alternateName: [book.title_ar, book.title_de].filter(Boolean),
+        inLanguage: "ar",
+        url: libraries[0]?.url || undefined,
+        sameAs: libraries.length > 1 ? libraries.map((l) => l.url) : undefined,
+        description: getLocalizedText(book, "description", locale, book.description || ""),
+        author: { "@id": personId },
+      };
+    }),
   ];
 
   return {
@@ -390,7 +394,13 @@ export function buildLlmsSummary(baseUrl: string, data: PortfolioData): string {
     .join("\n");
 
   const bookLines = data.books
-    .map((b) => `- [${b.title} / ${b.title_ar || b.title}](${b.link || baseUrl}): ${b.description || ""}`)
+    .map((b) => {
+      const libraries = getBookLibraryLinks(b);
+      const linksText = libraries.length
+        ? libraries.map((l) => `[${l.name}](${l.url})`).join(" · ")
+        : baseUrl;
+      return `- **${b.title} / ${b.title_ar || b.title}** (${linksText}): ${b.description || ""}`;
+    })
     .join("\n");
 
   return `# Sami Kazah (${data.profile.name_ar || "سامي قزح"})
@@ -490,10 +500,11 @@ ${eduList}
 
 ## Published Books
 ${data.books
-  .map(
-    (b) =>
-      `- **${b.title}** (${b.title_ar || ""} / ${b.title_de || ""}) — ${b.link || ""}: ${b.description || ""} / ${b.description_ar || ""}`
-  )
+  .map((b) => {
+    const libraries = getBookLibraryLinks(b);
+    const linksText = libraries.map((l) => `[${l.name}](${l.url})`).join(" | ");
+    return `- **${b.title}** (${b.title_ar || ""} / ${b.title_de || ""})${linksText ? ` — ${linksText}` : ""}: ${b.description || ""} / ${b.description_ar || ""}`;
+  })
   .join("\n")}
 `;
 }
