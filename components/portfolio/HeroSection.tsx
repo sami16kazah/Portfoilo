@@ -49,10 +49,6 @@ export default function HeroSection({
     getLocalizedText(featuredProject, "title", locale, "") || "shelforia.de";
 
   const displayName = getLocalizedText(profile, "name", locale, "Sami Kazah");
-  const alternateScriptName =
-    locale === "ar"
-      ? profile.name || "Sami Kazah"
-      : profile.name_ar || "سامي قزح";
   const displayTitle = getLocalizedText(
     profile,
     "title",
@@ -105,17 +101,8 @@ export default function HeroSection({
             className="lg:col-span-7 space-y-6"
           >
             <div className="space-y-3">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.15] flex flex-wrap items-baseline gap-x-4 gap-y-1">
-                <span>{displayName}</span>
-                {alternateScriptName && alternateScriptName !== displayName && (
-                  <span
-                    lang={locale === "ar" ? "en" : "ar"}
-                    dir={locale === "ar" ? "ltr" : "rtl"}
-                    className="text-2xl sm:text-3xl font-semibold text-slate-300"
-                  >
-                    {alternateScriptName}
-                  </span>
-                )}
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.15]">
+                {displayName}
               </h1>
               <p className="text-xl sm:text-2xl font-semibold text-indigo-300">
                 {displayTitle}
