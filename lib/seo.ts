@@ -155,6 +155,10 @@ export function buildLocaleMetadata(
     "Next.js",
     "TypeScript",
     "React",
+    "AWS Cloud",
+    "Amazon Web Services",
+    "AWS Cloud Engineer",
+    "سحابة AWS",
     "Full-Stack Engineer Germany",
   ];
 

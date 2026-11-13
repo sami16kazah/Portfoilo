@@ -4,10 +4,25 @@ import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import { 
   Box, Button, TextField, Typography, Paper, 
-  Slider, MenuItem, Select, InputLabel, FormControl 
+  Slider, MenuItem, Select, InputLabel, FormControl, Chip
 } from "@mui/material";
 import { FaSave, FaArrowLeft } from "react-icons/fa";
 import CloudinaryUploadButton from "@/components/admin/CloudinaryUploadButton";
+
+const ICON_PRESETS = [
+  { label: "AWS", value: "SiAmazonwebservices" },
+  { label: "EC2", value: "SiAmazonec2" },
+  { label: "S3", value: "SiAmazons3" },
+  { label: "RDS", value: "SiAmazonrds" },
+  { label: "Lambda", value: "SiAwslambda" },
+  { label: "IAM", value: "SiAmazoniam" },
+  { label: "CloudWatch", value: "SiAmazoncloudwatch" },
+  { label: "Route 53", value: "SiAmazonroute53" },
+  { label: "API Gateway", value: "SiAmazonapigateway" },
+  { label: "DynamoDB", value: "SiAmazondynamodb" },
+  { label: "ECS", value: "SiAmazonecs" },
+  { label: "Fargate", value: "SiAwsfargate" },
+];
 
 export default function SkillForm({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -98,28 +113,49 @@ export default function SkillForm({ params }: { params: Promise<{ id: string }> 
               label="Category"
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
             >
+              <MenuItem value="Cloud">Cloud (AWS)</MenuItem>
               <MenuItem value="Frontend">Frontend</MenuItem>
               <MenuItem value="Backend">Backend</MenuItem>
+              <MenuItem value="Database">Database</MenuItem>
+              <MenuItem value="Languages">Languages</MenuItem>
+              <MenuItem value="DevOps">DevOps</MenuItem>
               <MenuItem value="Tools">Tools</MenuItem>
               <MenuItem value="Soft Skills">Soft Skills</MenuItem>
             </Select>
           </FormControl>
 
-          <div className="flex gap-4 items-end">
-             <TextField
-               label="React Icon Name (e.g., FaReact) or URL"
-               fullWidth
-               value={formData.icon}
-               onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-               helperText="Check react-icons.github.io or Upload Image"
-             />
-              <CloudinaryUploadButton 
-                 signatureEndpoint="/api/sign-cloudinary-params" 
-                 onSuccess={(result: any) => setFormData({...formData, icon: result?.info?.secure_url})}
-                 className="bg-gray-200 hover:bg-gray-300 text-black px-4 py-3 rounded font-medium whitespace-nowrap mb-6"
-              >
-                 Upload
-              </CloudinaryUploadButton>
+          <div className="space-y-2">
+            <div className="flex gap-4 items-end">
+               <TextField
+                 label="React Icon Name (e.g., SiAmazonwebservices) or URL"
+                 fullWidth
+                 value={formData.icon}
+                 onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                 helperText="Choose a quick AWS icon below, enter a supported icon name, or upload an image"
+               />
+                <CloudinaryUploadButton 
+                   signatureEndpoint="/api/sign-cloudinary-params" 
+                   onSuccess={(result: any) => setFormData({...formData, icon: result?.info?.secure_url})}
+                   className="bg-gray-200 hover:bg-gray-300 text-black px-4 py-3 rounded font-medium whitespace-nowrap mb-6"
+                >
+                   Upload
+                </CloudinaryUploadButton>
+            </div>
+            <div className="flex flex-wrap items-center gap-1.5">
+              <Typography variant="caption" color="text.secondary" className="mr-1">
+                AWS icon presets:
+              </Typography>
+              {ICON_PRESETS.map((preset) => (
+                <Chip
+                  key={preset.value}
+                  label={preset.label}
+                  size="small"
+                  variant={formData.icon === preset.value ? "filled" : "outlined"}
+                  color={formData.icon === preset.value ? "primary" : "default"}
+                  onClick={() => setFormData({ ...formData, icon: preset.value })}
+                />
+              ))}
+            </div>
           </div>
 
           <Box>

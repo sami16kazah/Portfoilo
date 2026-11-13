@@ -9,6 +9,7 @@ import { Education } from "@/models/Education";
 import { Certification } from "@/models/Certification";
 import { Job } from "@/models/Job";
 import {
+  AWS_CLOUD_SKILLS,
   DEFAULT_BOOKS,
   DEFAULT_CERTIFICATIONS,
   DEFAULT_EDUCATION,
@@ -84,7 +85,14 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
         DEFAULT_PROJECTS as unknown as Record<string, unknown>[],
         "title"
       ) as unknown as ProjectData[],
-      skills: plainSkills.length > 0 ? plainSkills : DEFAULT_SKILLS,
+      skills:
+        plainSkills.length > 0
+          ? (mergeWithDefaults(
+              plainSkills as unknown as Record<string, unknown>[],
+              AWS_CLOUD_SKILLS as unknown as Record<string, unknown>[],
+              "name"
+            ) as unknown as SkillData[])
+          : DEFAULT_SKILLS,
       profile: mergeProfileWithDefaults(plainProfile) as ProfileData,
       photos: plainPhotos.length > 0 ? plainPhotos : DEFAULT_PHOTOS,
       books: plainBooks.length > 0 ? plainBooks : DEFAULT_BOOKS,
