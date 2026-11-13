@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 export type Locale = "en" | "de" | "ar";
 
@@ -452,20 +453,52 @@ const translations = {
   },
 };
 
-export const LocaleProvider = ({ children }: { children: ReactNode }) => {
-  const [locale, setLocale] = useState<Locale>("en");
+const LOCALE_ROUTES = new Set(["/", "/en", "/de", "/ar"]);
+
+function getLocaleFromPathname(pathname: string | null): Locale | null {
+  if (!pathname) return null;
+  if (pathname === "/ar" || pathname.startsWith("/ar/")) return "ar";
+  if (pathname === "/de" || pathname.startsWith("/de/")) return "de";
+  if (pathname === "/en" || pathname.startsWith("/en/")) return "en";
+  return null;
+}
+
+export const LocaleProvider = ({
+  children,
+  initialLocale = "en",
+}: {
+  children: ReactNode;
+  initialLocale?: Locale;
+}) => {
+  const pathname = usePathname();
+  const router = useRouter();
+  const pathLocale = getLocaleFromPathname(pathname);
+  const [locale, setLocaleState] = useState<Locale>(pathLocale ?? initialLocale);
+
+  useEffect(() => {
+    if (pathLocale) {
+      setLocaleState(pathLocale);
+    }
+  }, [pathLocale]);
 
   useEffect(() => {
     document.documentElement.lang = locale;
     document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
   }, [locale]);
 
+  const setLocale = (nextLocale: Locale) => {
+    setLocaleState(nextLocale);
+    if (pathname && LOCALE_ROUTES.has(pathname)) {
+      const target = `/${nextLocale}`;
+      if (pathname !== target) {
+        router.push(target, { scroll: false });
+      }
+    }
+  };
+
   const toggleLocale = () => {
-    setLocale((prev) => {
-      if (prev === "en") return "de";
-      if (prev === "de") return "ar";
-      return "en";
-    });
+    const next: Locale = locale === "en" ? "de" : locale === "de" ? "ar" : "en";
+    setLocale(next);
   };
 
   const t = translations[locale];

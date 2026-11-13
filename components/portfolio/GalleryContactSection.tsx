@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   FaImages,
@@ -441,10 +442,28 @@ export default function GalleryContactSection({
 
       {/* Footer */}
       <footer className="py-10 bg-[#05080F] border-t border-slate-800/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-300">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-300">
           <p>
-            © {new Date().getFullYear()} {profile.name || "Sami Kazah"}. {t.footer.rights}
+            © {new Date().getFullYear()} {profile.name || "Sami Kazah"} ({profile.name_ar || "سامي قزح"}). {t.footer.rights}
           </p>
+          <nav aria-label="Language and Crawler Links" className="flex flex-wrap items-center gap-4 text-xs text-slate-300">
+            <Link href="/en" className="hover:text-white underline-offset-4 hover:underline">
+              English
+            </Link>
+            <Link href="/de" className="hover:text-white underline-offset-4 hover:underline">
+              Deutsch
+            </Link>
+            <Link href="/ar" lang="ar" dir="rtl" className="hover:text-white underline-offset-4 hover:underline">
+              العربية
+            </Link>
+            <span className="text-slate-600" aria-hidden="true">|</span>
+            <a href="/llms.txt" className="hover:text-white underline-offset-4 hover:underline">
+              llms.txt
+            </a>
+            <a href="/sitemap.xml" className="hover:text-white underline-offset-4 hover:underline">
+              sitemap.xml
+            </a>
+          </nav>
           <p className="text-xs text-slate-400">{t.footer.builtWith}</p>
         </div>
       </footer>

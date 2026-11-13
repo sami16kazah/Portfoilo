@@ -1,11 +1,25 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Oswald, Pixelify_Sans } from "next/font/google";
+import { headers } from "next/headers";
+import {
+  Bricolage_Grotesque,
+  IBM_Plex_Sans_Arabic,
+  Oswald,
+  Pixelify_Sans,
+} from "next/font/google";
 import "./globals.css";
 import { cn } from "../lib/util";
-import { LocaleProvider } from "@/app/context/LocalContext";
+import { Locale, LocaleProvider } from "@/app/context/LocalContext";
+import { getEnvBaseUrl, isSupportedLocale } from "@/lib/seo";
 
 const MainFont = Bricolage_Grotesque({
   subsets: ["latin"],
+  variable: "--font-main",
+  display: "swap",
+});
+const ArabicFont = IBM_Plex_Sans_Arabic({
+  subsets: ["arabic", "latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-arabic",
   display: "swap",
 });
 const OswaldFont = Oswald({
@@ -20,27 +34,38 @@ const PixelFont = Pixelify_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Sami Kazah — Software & Full-Stack Engineer",
+  metadataBase: new URL(getEnvBaseUrl()),
+  title: "Sami Kazah (سامي قزح) — Software & Full-Stack Engineer",
   description:
-    "Portfolio of Sami Kazah — Software Engineer at cloudvibe GmbH & co-developer of shelforia.de.",
+    "Official portfolio of Sami Kazah (سامي قزح) — Software Engineer at cloudvibe GmbH in Germany & co-developer of shelforia.de.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headerStore = await headers();
+  const headerLocale = headerStore.get("x-portfolio-locale") || "en";
+  const initialLocale: Locale = isSupportedLocale(headerLocale) ? headerLocale : "en";
+
   return (
-    <html lang="en" className="scroll-smooth">
+    <html
+      lang={initialLocale}
+      dir={initialLocale === "ar" ? "rtl" : "ltr"}
+      className="scroll-smooth"
+    >
       <body
         className={cn(
           MainFont.className,
+          MainFont.variable,
+          ArabicFont.variable,
           OswaldFont.variable,
           PixelFont.variable,
           "bg-[#060911] text-slate-50 antialiased selection:bg-indigo-500 selection:text-white"
         )}
       >
-        <LocaleProvider>{children}</LocaleProvider>
+        <LocaleProvider initialLocale={initialLocale}>{children}</LocaleProvider>
         <div className="modal-container" />
       </body>
     </html>

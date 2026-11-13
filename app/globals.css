@@ -15,6 +15,11 @@ body {
   background-color: #060911;
   color: #f8fafc;
   overflow-x: hidden;
+  font-family: var(--font-main), var(--font-arabic), system-ui, sans-serif;
+}
+
+html[lang="ar"] body {
+  font-family: var(--font-arabic), var(--font-main), system-ui, sans-serif;
 }
 
 @layer utilities {
