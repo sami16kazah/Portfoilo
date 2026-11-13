@@ -16,18 +16,22 @@ import {
   FaMapMarkerAlt,
 } from "react-icons/fa";
 import { useLocale } from "@/app/context/LocalContext";
-import { PhotoData, ProfileData } from "./types";
+import { PhotoData, ProfileData, SiteSettingsData, getLocalizedText } from "./types";
 
 interface GalleryContactSectionProps {
   photos: PhotoData[];
   profile: ProfileData;
+  siteSettings?: SiteSettingsData;
+  showContact?: boolean;
 }
 
 export default function GalleryContactSection({
   photos,
   profile,
+  siteSettings,
+  showContact = true,
 }: GalleryContactSectionProps) {
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
   const prefersReducedMotion = useReducedMotion();
 
   // Lightbox state
@@ -122,8 +126,21 @@ export default function GalleryContactSection({
     }
   };
 
-  const serviceOptions = ["Full-Stack Web", "Cloud / ERP", "UI/UX & Frontend", "API & Backend"];
-  const budgetOptions = ["< €1,000", "€1,000 – €5,000", "€5,000+", "Full-Time / Role"];
+  const serviceOptions =
+    siteSettings?.serviceOptions && siteSettings.serviceOptions.length > 0
+      ? siteSettings.serviceOptions
+      : ["Full-Stack Web", "Cloud / ERP", "UI/UX & Frontend", "API & Backend"];
+  const budgetOptions =
+    siteSettings?.budgetOptions && siteSettings.budgetOptions.length > 0
+      ? siteSettings.budgetOptions
+      : ["< €1,000", "€1,000 – €5,000", "€5,000+", "Full-Time / Role"];
+  const locationLabel = getLocalizedText(
+    siteSettings,
+    "locationLabel",
+    locale,
+    t.contact.locationLabel
+  );
+  const footerName = getLocalizedText(profile, "name", locale, "Sami Kazah");
 
   return (
     <>
@@ -226,6 +243,7 @@ export default function GalleryContactSection({
       )}
 
       {/* Contact Section */}
+      {showContact && (
       <section id="contact" className="py-24 bg-[#070B14] border-t border-slate-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
@@ -271,7 +289,7 @@ export default function GalleryContactSection({
                 <div className="pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-300">
                   <span className="inline-flex items-center gap-1.5">
                     <FaMapMarkerAlt className="text-cyan-400" aria-hidden="true" />
-                    {t.contact.locationLabel}
+                    {locationLabel}
                   </span>
                   <div className="flex items-center gap-2">
                     {profile.socialLinks?.github && (
@@ -432,12 +450,13 @@ export default function GalleryContactSection({
           </div>
         </div>
       </section>
+      )}
 
       {/* Footer */}
       <footer className="py-8 bg-[#05080F] border-t border-slate-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-300">
           <p>
-            © {new Date().getFullYear()} {profile.name || "Sami Kazah"}. {t.footer.rights}
+            © {new Date().getFullYear()} {footerName}. {t.footer.rights}
           </p>
           <nav aria-label="Language versions" className="flex flex-wrap items-center gap-4 text-xs text-slate-300">
             <Link href="/en" className="hover:text-white underline-offset-4 hover:underline">

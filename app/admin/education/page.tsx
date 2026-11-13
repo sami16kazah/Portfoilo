@@ -1,11 +1,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { 
-  Box, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton 
+import {
+  Typography,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
 } from "@mui/material";
 import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import Link from "next/link";
+import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
 
 interface Education {
   _id: string;
@@ -17,6 +27,7 @@ interface Education {
 export default function EducationPage() {
   const [education, setEducation] = useState<Education[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchEducation();
@@ -33,32 +44,41 @@ export default function EducationPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this entry?")) return;
+  const handleDelete = async () => {
+    if (!deleteId) return;
     try {
-      await fetch(`/api/education/${id}`, { method: "DELETE" });
-      setEducation(education.filter(e => e._id !== id));
+      await fetch(`/api/education/${deleteId}`, { method: "DELETE" });
+      setEducation((prev) => prev.filter((e) => e._id !== deleteId));
     } catch (error) {
       console.error("Failed to delete", error);
+    } finally {
+      setDeleteId(null);
     }
   };
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <Typography variant="h4" fontWeight="bold">Education</Typography>
-        <Button 
-          component={Link} 
-          href="/admin/education/new" 
-          variant="contained" 
+      <div className="flex flex-wrap justify-between items-center gap-4">
+        <div>
+          <Typography variant="h4" fontWeight={800}>
+            Education
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Manage degrees and academic credentials shown on the public portfolio.
+          </Typography>
+        </div>
+        <Button
+          component={Link}
+          href="/admin/education/new"
+          variant="contained"
+          color="primary"
           startIcon={<FaPlus />}
-          className="bg-black hover:bg-gray-800"
         >
           Add Education
         </Button>
       </div>
 
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -75,21 +95,35 @@ export default function EducationPage() {
                 <TableCell>{edu.institution}</TableCell>
                 <TableCell>{edu.year}</TableCell>
                 <TableCell align="right">
-                  <IconButton component={Link} href={`/admin/education/${edu._id}`} color="primary">
+                  <IconButton component={Link} href={`/admin/education/${edu._id}`} color="secondary">
                     <FaEdit />
                   </IconButton>
-                  <IconButton onClick={() => handleDelete(edu._id)} color="error">
+                  <IconButton onClick={() => setDeleteId(edu._id)} color="error">
                     <FaTrash />
                   </IconButton>
                 </TableCell>
               </TableRow>
             ))}
             {education.length === 0 && !loading && (
-               <TableRow><TableCell colSpan={4} align="center">No education found</TableCell></TableRow>
+              <TableRow>
+                <TableCell colSpan={4} align="center" sx={{ py: 5, color: "text.secondary" }}>
+                  No education found.
+                </TableCell>
+              </TableRow>
             )}
           </TableBody>
         </Table>
       </TableContainer>
+
+      <ConfirmationModal
+        isOpen={Boolean(deleteId)}
+        onClose={() => setDeleteId(null)}
+        onConfirm={handleDelete}
+        title="Delete Education Entry"
+        description="Are you sure you want to remove this education entry from your portfolio?"
+        confirmText="Delete"
+        isDestructive
+      />
     </div>
   );
 }

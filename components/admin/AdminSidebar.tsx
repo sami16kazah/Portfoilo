@@ -1,37 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Drawer, IconButton } from "@mui/material";
 import {
-  FaHome,
-  FaProjectDiagram,
-  FaCode,
-  FaUser,
-  FaImages,
-  FaSignOutAlt,
-  FaGraduationCap,
-  FaBook,
-  FaCertificate,
-  FaBriefcase,
-  FaShieldAlt,
-  FaExternalLinkAlt,
-  FaBars,
-  FaTimes,
-} from "react-icons/fa";
+  Menu as MenuIcon,
+  Dashboard as DashboardIcon,
+  Person as PersonIcon,
+  Work as WorkIcon,
+  Code as CodeIcon,
+  AutoAwesome as SkillIcon,
+  MenuBook as BookIcon,
+  School as SchoolIcon,
+  Verified as CertIcon,
+  PhotoLibrary as PhotoIcon,
+  Shield as SecurityIcon,
+  OpenInNew as OpenIcon,
+  Logout as LogoutIcon,
+} from "@mui/icons-material";
 import { signOutAction } from "@/app/lib/actions";
 
 const navItems = [
-  { name: "Dashboard", href: "/admin/dashboard", icon: FaHome },
-  { name: "Profile & Bio", href: "/admin/profile", icon: FaUser },
-  { name: "Jobs & Experience", href: "/admin/jobs", icon: FaBriefcase },
-  { name: "Projects & Demos", href: "/admin/projects", icon: FaProjectDiagram },
-  { name: "Skills & Cloud", href: "/admin/skills", icon: FaCode },
-  { name: "Published Books", href: "/admin/books", icon: FaBook },
-  { name: "Education", href: "/admin/education", icon: FaGraduationCap },
-  { name: "Certifications", href: "/admin/certifications", icon: FaCertificate },
-  { name: "Photo Gallery", href: "/admin/photos", icon: FaImages },
-  { name: "Security", href: "/admin/security", icon: FaShieldAlt },
+  { href: "/admin/dashboard", label: "Studio Overview", icon: <DashboardIcon fontSize="small" /> },
+  { href: "/admin/profile", label: "Identity & Bio", icon: <PersonIcon fontSize="small" /> },
+  { href: "/admin/jobs", label: "Jobs & Experience", icon: <WorkIcon fontSize="small" /> },
+  { href: "/admin/projects", label: "Projects & Demos", icon: <CodeIcon fontSize="small" /> },
+  { href: "/admin/skills", label: "Skills & Cloud", icon: <SkillIcon fontSize="small" /> },
+  { href: "/admin/books", label: "Published Books", icon: <BookIcon fontSize="small" /> },
+  { href: "/admin/education", label: "Education", icon: <SchoolIcon fontSize="small" /> },
+  { href: "/admin/certifications", label: "Certifications", icon: <CertIcon fontSize="small" /> },
+  { href: "/admin/photos", label: "Photo Gallery", icon: <PhotoIcon fontSize="small" /> },
+  { href: "/admin/security", label: "Security & Session", icon: <SecurityIcon fontSize="small" /> },
 ];
 
 export default function AdminSidebar({ userEmail }: { userEmail?: string }) {
@@ -39,109 +39,117 @@ export default function AdminSidebar({ userEmail }: { userEmail?: string }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const sidebarContent = (
-    <>
-      <div className="p-6 border-b border-gray-800 flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-            Portfolio Studio
-          </h2>
-          {userEmail && (
-            <p className="text-xs text-slate-400 mt-1 truncate max-w-[185px]" title={userEmail}>
-              {userEmail}
-            </p>
-          )}
+    <div className="flex flex-col h-full bg-[#060A14] text-slate-100 w-68 border-r border-slate-800/90">
+      <div className="p-5 border-b border-slate-800/90">
+        <div className="flex items-center gap-3">
+          <img
+            src="/assets/images/sami.jpg"
+            alt="Sami Kazah"
+            className="h-10 w-10 rounded-xl object-cover object-top border border-emerald-500/40 shrink-0"
+          />
+          <div className="min-w-0">
+            <div className="text-[11px] font-semibold uppercase tracking-widest text-emerald-400">
+              Portfolio Studio
+            </div>
+            <div className="text-base font-bold tracking-tight text-white truncate">
+              Sami Kazah Admin
+            </div>
+          </div>
         </div>
-        <button
-          type="button"
-          onClick={() => setMobileOpen(false)}
-          className="md:hidden text-slate-300 hover:text-white p-1.5"
-          aria-label="Close navigation menu"
-        >
-          <FaTimes />
-        </button>
+        {userEmail && (
+          <div className="mt-3 px-2.5 py-1.5 rounded-xl bg-[#0D1322] border border-slate-800 text-[11px] text-slate-300 truncate flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 shrink-0" />
+            <span className="truncate">{userEmail}</span>
+          </div>
+        )}
       </div>
 
-      <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+      <nav className="flex-1 p-3.5 space-y-1 overflow-y-auto">
         {navItems.map((item) => {
-          const isActive = pathname.startsWith(item.href);
-          const Icon = item.icon;
-
+          const active = pathname === item.href || pathname?.startsWith(`${item.href}/`);
           return (
             <Link
               key={item.href}
               href={item.href}
               onClick={() => setMobileOpen(false)}
-              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm transition-all duration-150 ${
-                isActive
-                  ? "bg-emerald-600 text-white shadow"
-                  : "text-gray-300 hover:bg-gray-800 hover:text-white"
+              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                active
+                  ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/35 shadow-sm"
+                  : "text-slate-300 hover:bg-slate-800/70 hover:text-white border border-transparent"
               }`}
             >
-              <Icon className="text-base shrink-0" />
-              <span className="font-medium truncate">{item.name}</span>
+              <span className={active ? "text-emerald-400" : "text-slate-400"}>{item.icon}</span>
+              <span>{item.label}</span>
             </Link>
           );
         })}
       </nav>
 
-      <div className="p-3 border-t border-gray-800 space-y-1.5">
+      <div className="p-4 border-t border-slate-800/90 space-y-2.5">
         <Link
           href="/"
           target="_blank"
-          rel="noopener noreferrer"
-          className="w-full flex items-center justify-between px-3.5 py-2.5 text-sm text-cyan-300 hover:bg-gray-800 rounded-lg transition-colors"
+          className="flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-[#0D1322] border border-slate-800 hover:border-cyan-400/50 text-xs font-semibold text-cyan-300 transition-colors"
         >
           <span>View Live Portfolio</span>
-          <FaExternalLinkAlt className="text-xs" />
+          <OpenIcon sx={{ fontSize: 15 }} />
         </Link>
-
         <form action={signOutAction}>
           <button
             type="submit"
-            className="w-full flex items-center gap-3 px-3.5 py-2.5 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-rose-950/50 hover:bg-rose-900/70 border border-rose-500/30 text-xs font-semibold text-rose-200 transition-colors cursor-pointer"
           >
-            <FaSignOutAlt />
+            <LogoutIcon sx={{ fontSize: 15 }} />
             <span>Sign Out</span>
           </button>
         </form>
       </div>
-    </>
+    </div>
   );
 
   return (
     <>
-      {/* Mobile Header Bar */}
-      <div className="md:hidden fixed top-0 inset-x-0 h-14 bg-gray-900 text-white z-40 px-4 flex items-center justify-between border-b border-gray-800">
-        <span className="font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-          Portfolio Studio
-        </span>
-        <button
-          type="button"
+      {/* Mobile Header */}
+      <div className="md:hidden sticky top-0 z-40 flex items-center justify-between px-4 py-3 bg-[#060A14]/95 backdrop-blur-md border-b border-slate-800 text-white">
+        <div className="flex items-center gap-2.5">
+          <img
+            src="/assets/images/sami.jpg"
+            alt="Sami Kazah"
+            className="h-8 w-8 rounded-lg object-cover object-top border border-emerald-500/40"
+          />
+          <div>
+            <span className="text-[10px] uppercase tracking-widest text-emerald-400 block leading-none">
+              Portfolio Studio
+            </span>
+            <span className="font-bold text-sm text-white">Sami Kazah Admin</span>
+          </div>
+        </div>
+        <IconButton
           onClick={() => setMobileOpen(true)}
-          className="p-2 rounded-lg text-slate-200 hover:bg-gray-800"
-          aria-label="Open navigation menu"
+          sx={{ color: "#E2E8F0" }}
+          aria-label="Open menu"
         >
-          <FaBars />
-        </button>
+          <MenuIcon />
+        </IconButton>
       </div>
 
       {/* Mobile Drawer */}
-      {mobileOpen && (
-        <div
-          className="md:hidden fixed inset-0 bg-black/50 z-50"
-          onClick={() => setMobileOpen(false)}
-        >
-          <aside
-            className="w-64 bg-gray-900 text-white h-full flex flex-col"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {sidebarContent}
-          </aside>
-        </div>
-      )}
+      <Drawer
+        anchor="left"
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        sx={{
+          "& .MuiDrawer-paper": {
+            backgroundColor: "#060A14",
+            borderRight: "1px solid #1E293B",
+          },
+        }}
+      >
+        {sidebarContent}
+      </Drawer>
 
-      {/* Desktop Fixed Sidebar */}
-      <aside className="hidden md:flex w-64 bg-gray-900 text-white min-h-screen flex-col fixed left-0 top-0 z-30">
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:block shrink-0 sticky top-0 h-screen">
         {sidebarContent}
       </aside>
     </>

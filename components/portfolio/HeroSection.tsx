@@ -15,18 +15,45 @@ import {
 } from "react-icons/fa";
 import { useLocale } from "@/app/context/LocalContext";
 import {
+  JobData,
   ProfileData,
+  ProjectData,
+  SiteSettingsData,
   getLocalizedList,
   getLocalizedText,
 } from "./types";
 
 interface HeroSectionProps {
   profile: ProfileData;
+  siteSettings?: SiteSettingsData;
+  currentJob?: JobData;
+  featuredProject?: ProjectData;
 }
 
-export default function HeroSection({ profile }: HeroSectionProps) {
+export default function HeroSection({
+  profile,
+  siteSettings,
+  currentJob,
+  featuredProject,
+}: HeroSectionProps) {
   const { locale, t } = useLocale();
   const prefersReducedMotion = useReducedMotion();
+
+  const heroBadgeText =
+    getLocalizedText(siteSettings, "heroBadge", locale, "") ||
+    (currentJob
+      ? `${getLocalizedText(currentJob, "role", locale, currentJob.role)} · ${currentJob.company}`
+      : t.hero.badge);
+  const availabilityText = getLocalizedText(siteSettings, "availabilityLabel", locale, "");
+  const companyLabel = siteSettings?.featuredCompanyLabel || "Company";
+  const companyHref = currentJob?.companyUrl || "https://cloudvibe.de/";
+  const companyLogo = currentJob?.logoUrl || "/assets/companies/cloudvibe-logo.webp";
+  const companyName = currentJob?.company || "cloudvibe GmbH";
+  const flagshipLabel = siteSettings?.featuredProjectLabel || "Flagship ERP";
+  const projectHref = featuredProject?.demoUrl || "https://shelforia.de/";
+  const projectLogo = featuredProject?.logoUrl || "/assets/projects/shelforia-logo.svg";
+  const projectTitle =
+    getLocalizedText(featuredProject, "title", locale, "") || "shelforia.de";
 
   const displayName = getLocalizedText(profile, "name", locale, "Sami Kazah");
   const alternateScriptName =
@@ -84,14 +111,25 @@ export default function HeroSection({ profile }: HeroSectionProps) {
             transition={{ duration: 0.45, ease: "easeOut" }}
             className="lg:col-span-7 space-y-6"
           >
-            {/* Current job status pill */}
-            <a
-              href="#experience"
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-900/90 border border-slate-700/80 text-slate-200 text-sm font-medium hover:border-slate-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
-            >
-              <FaBuilding className="text-indigo-300 text-xs" aria-hidden="true" />
-              <span>{t.hero.badge}</span>
-            </a>
+            {/* Current job & availability pills */}
+            <div className="flex flex-wrap items-center gap-2.5">
+              <a
+                href="#experience"
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-900/90 border border-slate-700/80 text-slate-200 text-sm font-medium hover:border-slate-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+              >
+                <FaBuilding className="text-indigo-300 text-xs" aria-hidden="true" />
+                <span>{heroBadgeText}</span>
+              </a>
+              {availabilityText && (
+                <a
+                  href="#contact"
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 text-xs font-semibold hover:border-emerald-400/60 transition-colors"
+                >
+                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true" />
+                  <span>{availabilityText}</span>
+                </a>
+              )}
+            </div>
 
             <div className="space-y-3">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.15] flex flex-wrap items-baseline gap-x-4 gap-y-1">
@@ -208,41 +246,49 @@ export default function HeroSection({ profile }: HeroSectionProps) {
                   <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0D1322] via-[#0D1322]/70 to-transparent" />
                 </div>
 
-                {/* Integrated CloudVibe + Shelforia quick badges */}
+                {/* Integrated Company + Flagship Project quick badges */}
                 <div className="mt-4 grid grid-cols-2 gap-3">
                   <a
-                    href="https://cloudvibe.de/"
+                    href={companyHref}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="rounded-xl bg-[#070B14] border border-slate-800 hover:border-cyan-400/50 p-3 flex flex-col justify-between transition-colors"
                   >
                     <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-                      Company
+                      {companyLabel}
                     </span>
-                    <img
-                      src="/assets/companies/cloudvibe-logo.webp"
-                      alt="cloudvibe GmbH"
-                      className="h-8 w-auto object-contain object-left mt-1.5"
-                    />
+                    {companyLogo ? (
+                      <img
+                        src={companyLogo}
+                        alt={companyName}
+                        className="h-8 w-auto object-contain object-left mt-1.5"
+                      />
+                    ) : (
+                      <span className="text-sm font-bold text-white mt-1.5 truncate">
+                        {companyName}
+                      </span>
+                    )}
                   </a>
 
                   <a
-                    href="https://shelforia.de/"
+                    href={projectHref}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="rounded-xl bg-[#162B25] border border-emerald-700/60 hover:border-amber-300/60 p-3 flex flex-col justify-between transition-colors"
                   >
-                    <span className="text-[11px] font-semibold uppercase tracking-wider text-amber-200/90">
-                      Flagship ERP
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-amber-200/90 truncate">
+                      {flagshipLabel}
                     </span>
                     <div className="flex items-center gap-2 mt-1.5">
-                      <img
-                        src="/assets/projects/shelforia-logo.svg"
-                        alt="shelforia"
-                        className="h-7 w-7 rounded-md shrink-0"
-                      />
+                      {projectLogo && (
+                        <img
+                          src={projectLogo}
+                          alt={projectTitle}
+                          className="h-7 w-7 rounded-md shrink-0 object-contain"
+                        />
+                      )}
                       <span className="text-sm font-bold text-[#F5EBDD] truncate">
-                        shelforia.de
+                        {projectTitle}
                       </span>
                     </div>
                   </a>

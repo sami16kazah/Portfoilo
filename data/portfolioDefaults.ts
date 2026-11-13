@@ -497,6 +497,51 @@ export const DEFAULT_BOOKS = [
   },
 ];
 
+export const CURRENT_DEFAULTS_VERSION = 2;
+
+export const DEFAULT_SITE_SETTINGS = {
+  key: "main",
+  heroBadge: "Software Engineer at cloudvibe GmbH",
+  heroBadge_de: "Softwareentwickler bei cloudvibe GmbH",
+  heroBadge_ar: "مهندس برمجيات لدى cloudvibe GmbH",
+  availabilityLabel: "Available for Web & Cloud Engineering",
+  availabilityLabel_de: "Verfügbar für Web- & Cloud-Engineering",
+  availabilityLabel_ar: "متاح لمشاريع الويب والأنظمة السحابية",
+  locationLabel: "Based in Germany",
+  locationLabel_de: "Standort Deutschland",
+  locationLabel_ar: "مقيم في ألمانيا",
+  featuredCompanyLabel: "Company",
+  featuredProjectLabel: "Flagship ERP",
+  serviceOptions: ["Full-Stack Web", "Cloud / ERP", "UI/UX & Frontend", "API & Backend"],
+  budgetOptions: ["< €1,000", "€1,000 – €5,000", "€5,000+", "Full-Time / Role"],
+  showExperienceSection: true,
+  showPerformanceTelemetry: true,
+  showProjectsSection: true,
+  showSkillsSection: true,
+  showBooksSection: true,
+  showEducationSection: true,
+  showGallerySection: true,
+  showContactSection: true,
+  defaultsSyncVersion: CURRENT_DEFAULTS_VERSION,
+};
+
+export function mergeSiteSettingsWithDefaults(dbSettings: Record<string, unknown> | null) {
+  if (!dbSettings) return DEFAULT_SITE_SETTINGS;
+
+  return {
+    ...DEFAULT_SITE_SETTINGS,
+    ...dbSettings,
+    serviceOptions:
+      Array.isArray(dbSettings.serviceOptions) && dbSettings.serviceOptions.length > 0
+        ? dbSettings.serviceOptions
+        : DEFAULT_SITE_SETTINGS.serviceOptions,
+    budgetOptions:
+      Array.isArray(dbSettings.budgetOptions) && dbSettings.budgetOptions.length > 0
+        ? dbSettings.budgetOptions
+        : DEFAULT_SITE_SETTINGS.budgetOptions,
+  };
+}
+
 export const DEFAULT_PHOTOS = [
   { _id: "photo-0", url: "/assets/gallery/Img0.jpg", title: "Portrait & Workspace", category: "Work" },
   { _id: "photo-1", url: "/assets/gallery/Img1.jpg", title: "Engineering Session", category: "Event" },

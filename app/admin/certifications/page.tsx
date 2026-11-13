@@ -59,7 +59,7 @@ export default function CertificationsPage() {
           variant="contained"
           startIcon={<FaPlus />}
           onClick={() => router.push("/admin/certifications/new")}
-          sx={{ bgcolor: 'black', '&:hover': { bgcolor: '#333' } }}
+          color="primary"
         >
           Add Certification
         </Button>

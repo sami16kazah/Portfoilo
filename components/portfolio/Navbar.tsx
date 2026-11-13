@@ -4,12 +4,20 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaBars, FaTimes, FaGlobe } from "react-icons/fa";
 import { Locale, useLocale } from "@/app/context/LocalContext";
+import { ProfileData, SiteSettingsData, getLocalizedText } from "./types";
 
-export default function Navbar() {
+interface NavbarProps {
+  profile?: ProfileData;
+  siteSettings?: SiteSettingsData;
+}
+
+export default function Navbar({ profile, siteSettings }: NavbarProps) {
   const { locale, setLocale, t } = useLocale();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [berlinTime, setBerlinTime] = useState("");
+  const brandName = getLocalizedText(profile, "name", locale, "Sami Kazah");
+  const avatarSrc = profile?.avatarUrl || "/assets/images/sami.jpg";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -38,13 +46,21 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { href: "#experience", label: t.nav.experience },
-    { href: "#projects", label: t.nav.projects },
-    { href: "#skills", label: t.nav.skills },
-    { href: "#education", label: t.nav.education },
-    { href: "#books", label: t.nav.books },
-    { href: "#contact", label: t.nav.contact },
-  ];
+    siteSettings?.showExperienceSection !== false
+      ? { href: "#experience", label: t.nav.experience }
+      : null,
+    siteSettings?.showProjectsSection !== false
+      ? { href: "#projects", label: t.nav.projects }
+      : null,
+    siteSettings?.showSkillsSection !== false ? { href: "#skills", label: t.nav.skills } : null,
+    siteSettings?.showEducationSection !== false
+      ? { href: "#education", label: t.nav.education }
+      : null,
+    siteSettings?.showBooksSection !== false ? { href: "#books", label: t.nav.books } : null,
+    siteSettings?.showContactSection !== false
+      ? { href: "#contact", label: t.nav.contact }
+      : null,
+  ].filter(Boolean) as { href: string; label: string }[];
 
   const locales: Locale[] = ["en", "de", "ar"];
 
@@ -64,11 +80,11 @@ export default function Navbar() {
             className="flex items-center gap-3 text-slate-50 font-bold tracking-tight text-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 rounded-lg px-1"
           >
             <img
-              src="/assets/images/sami.jpg"
-              alt="Sami Kazah"
+              src={avatarSrc}
+              alt={brandName}
               className="h-9 w-9 rounded-xl object-cover object-top border border-slate-700/80 shrink-0"
             />
-            <span className="hidden sm:inline">Sami Kazah</span>
+            <span className="hidden sm:inline">{brandName}</span>
           </a>
 
           {/* Desktop links */}

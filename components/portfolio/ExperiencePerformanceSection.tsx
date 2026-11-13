@@ -16,6 +16,7 @@ import { JobData, getLocalizedList, getLocalizedText } from "./types";
 
 interface ExperiencePerformanceSectionProps {
   jobs: JobData[];
+  showTelemetry?: boolean;
 }
 
 interface TelemetryState {
@@ -27,6 +28,7 @@ interface TelemetryState {
 
 export default function ExperiencePerformanceSection({
   jobs,
+  showTelemetry = true,
 }: ExperiencePerformanceSectionProps) {
   const { locale, t } = useLocale();
   const prefersReducedMotion = useReducedMotion();
@@ -118,7 +120,7 @@ export default function ExperiencePerformanceSection({
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Jobs Timeline / Current Role Cards */}
-          <div className="lg:col-span-7 space-y-6">
+          <div className={`${showTelemetry ? "lg:col-span-7" : "lg:col-span-12"} space-y-6`}>
             {jobs.map((job, idx) => {
               const role = getLocalizedText(job, "role", locale, job.role);
               const location = getLocalizedText(job, "location", locale, job.location || "");
@@ -267,6 +269,7 @@ export default function ExperiencePerformanceSection({
           </div>
 
           {/* Right Column: Creative Performance Studio */}
+          {showTelemetry && (
           <motion.aside
             initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -424,6 +427,7 @@ export default function ExperiencePerformanceSection({
               </div>
             )}
           </motion.aside>
+          )}
         </div>
       </div>
     </section>

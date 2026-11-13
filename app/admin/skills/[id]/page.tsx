@@ -136,7 +136,7 @@ export default function SkillForm({ params }: { params: Promise<{ id: string }> 
                 <CloudinaryUploadButton 
                    signatureEndpoint="/api/sign-cloudinary-params" 
                    onSuccess={(result: any) => setFormData({...formData, icon: result?.info?.secure_url})}
-                   className="bg-gray-200 hover:bg-gray-300 text-black px-4 py-3 rounded font-medium whitespace-nowrap mb-6"
+                   className="bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 px-4 py-3 rounded-xl font-medium whitespace-nowrap mb-6 transition-colors"
                 >
                    Upload
                 </CloudinaryUploadButton>
@@ -174,7 +174,7 @@ export default function SkillForm({ params }: { params: Promise<{ id: string }> 
             size="large"
             disabled={loading}
             startIcon={<FaSave />}
-            sx={{ bgcolor: 'black', '&:hover': { bgcolor: '#333' } }}
+            color="primary"
           >
             {loading ? "Saving..." : "Save Skill"}
           </Button>

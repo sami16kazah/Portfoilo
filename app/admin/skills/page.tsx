@@ -64,7 +64,7 @@ export default function SkillsPage() {
       <div className="flex justify-between items-center">
         <Typography variant="h4" component="h1" fontWeight="bold">Skills</Typography>
         <Link href="/admin/skills/new">
-          <Button variant="contained" startIcon={<FaPlus />} sx={{ bgcolor: 'black' }}>
+          <Button variant="contained" color="primary" startIcon={<FaPlus />}>
             Add Skill
           </Button>
         </Link>
@@ -72,7 +72,7 @@ export default function SkillsPage() {
 
       <TableContainer component={Paper} elevation={0} className="border rounded-lg">
         <Table>
-          <TableHead className="bg-gray-50">
+          <TableHead>
             <TableRow>
               <TableCell className="font-semibold">Name</TableCell>
               <TableCell className="font-semibold">Category</TableCell>

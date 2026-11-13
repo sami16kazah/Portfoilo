@@ -133,3 +133,29 @@ export const PHOTO_SANITIZE: SanitizeModelOptions = {
   allowedFields: ["url", "title", "category"],
   urlFields: ["url"],
 };
+
+export const SITE_SETTINGS_SANITIZE: SanitizeModelOptions = {
+  allowedFields: [
+    "heroBadge",
+    "heroBadge_de",
+    "heroBadge_ar",
+    "availabilityLabel",
+    "availabilityLabel_de",
+    "availabilityLabel_ar",
+    "locationLabel",
+    "locationLabel_de",
+    "locationLabel_ar",
+    "featuredCompanyLabel",
+    "featuredProjectLabel",
+    "serviceOptions",
+    "budgetOptions",
+    "showExperienceSection",
+    "showPerformanceTelemetry",
+    "showProjectsSection",
+    "showSkillsSection",
+    "showBooksSection",
+    "showEducationSection",
+    "showGallerySection",
+    "showContactSection",
+  ],
+};

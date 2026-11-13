@@ -318,7 +318,7 @@ export default function ProjectForm({ params }: { params: Promise<{ id: string }
                 const url = (result as { info?: { secure_url?: string } })?.info?.secure_url;
                 if (url) setFormData((prev) => ({ ...prev, imageUrl: url }));
               }}
-              className="bg-gray-200 hover:bg-gray-300 text-black px-4 py-3 rounded font-medium whitespace-nowrap"
+              className="bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 px-4 py-3 rounded-xl font-medium whitespace-nowrap transition-colors"
             >
               Upload Image
             </CloudinaryUploadButton>
@@ -337,7 +337,7 @@ export default function ProjectForm({ params }: { params: Promise<{ id: string }
                 const url = (result as { info?: { secure_url?: string } })?.info?.secure_url;
                 if (url) setFormData((prev) => ({ ...prev, logoUrl: url }));
               }}
-              className="bg-gray-200 hover:bg-gray-300 text-black px-4 py-3 rounded font-medium whitespace-nowrap"
+              className="bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 px-4 py-3 rounded-xl font-medium whitespace-nowrap transition-colors"
             >
               Upload Logo
             </CloudinaryUploadButton>
@@ -357,14 +357,14 @@ export default function ProjectForm({ params }: { params: Promise<{ id: string }
                 const url = (result as { info?: { secure_url?: string } })?.info?.secure_url;
                 if (url) setFormData((prev) => ({ ...prev, videoUrl: url, demoStatus: "ready" }));
               }}
-              className="bg-gray-200 hover:bg-gray-300 text-black px-4 py-3 rounded font-medium whitespace-nowrap"
+              className="bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 px-4 py-3 rounded-xl font-medium whitespace-nowrap transition-colors"
             >
               Upload Video
             </CloudinaryUploadButton>
           </div>
 
           {/* Demo Video Chapters */}
-          <Box className="rounded-lg border border-gray-200 bg-gray-50 p-4 space-y-3">
+          <Box className="rounded-xl border border-slate-800 bg-[#070B14] p-4 space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
                 <Typography variant="subtitle1" fontWeight="bold">
@@ -380,7 +380,7 @@ export default function ProjectForm({ params }: { params: Promise<{ id: string }
             </div>
 
             {videoChapters.map((ch, idx) => (
-              <div key={idx} className="p-3 bg-white rounded border border-gray-200 space-y-3">
+              <div key={idx} className="p-3 bg-[#0D1322] rounded-xl border border-slate-800 space-y-3">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <TextField
                     size="small"
@@ -416,7 +416,7 @@ export default function ProjectForm({ params }: { params: Promise<{ id: string }
                       const url = (result as { info?: { secure_url?: string } })?.info?.secure_url;
                       if (url) updateChapter(idx, "url", url);
                     }}
-                    className="bg-gray-200 hover:bg-gray-300 text-black px-3 py-2 rounded text-xs font-medium"
+                    className="bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 px-3 py-2 rounded-lg text-xs font-medium transition-colors"
                   >
                     Upload Clip
                   </CloudinaryUploadButton>
@@ -451,7 +451,7 @@ export default function ProjectForm({ params }: { params: Promise<{ id: string }
               size="large"
               startIcon={<FaSave />}
               disabled={loading}
-              sx={{ bgcolor: "black", "&:hover": { bgcolor: "#333" } }}
+              color="primary"
             >
               {loading ? "Saving..." : "Save Project"}
             </Button>

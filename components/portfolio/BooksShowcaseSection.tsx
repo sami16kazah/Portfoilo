@@ -371,3 +371,4 @@ export default function BooksShowcaseSection({ books }: BooksShowcaseSectionProp
     </section>
   );
 }
+

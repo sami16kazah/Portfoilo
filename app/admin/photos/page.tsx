@@ -148,7 +148,7 @@ export default function PhotosPage() {
         <Typography variant="h4" fontWeight="bold">
           Photo Gallery
         </Typography>
-        <div className="bg-black text-white px-4 py-2 rounded shadow hover:bg-gray-800 transition cursor-pointer">
+        <div className="bg-emerald-500 text-slate-950 font-semibold px-4 py-2 rounded-xl shadow hover:bg-emerald-400 transition cursor-pointer">
           <CloudinaryUploadButton
             signatureEndpoint="/api/sign-cloudinary-params"
             onSuccess={handleUpload}
@@ -192,7 +192,7 @@ export default function PhotosPage() {
             />
           </div>
           <div className="md:col-span-2">
-            <Button type="submit" variant="contained" fullWidth sx={{ bgcolor: "black" }}>
+            <Button type="submit" variant="contained" color="primary" fullWidth>
               Add URL
             </Button>
           </div>
@@ -219,8 +219,9 @@ export default function PhotosPage() {
                     <div className="absolute top-2 right-2 flex gap-1.5">
                       <IconButton
                         size="small"
+                        color="secondary"
                         onClick={() => startEdit(photo)}
-                        sx={{ bgcolor: "rgba(255,255,255,0.9)" }}
+                        sx={{ bgcolor: "rgba(13,19,34,0.88)", border: "1px solid #334155" }}
                         aria-label="Edit photo"
                       >
                         <FaEdit />
@@ -229,7 +230,7 @@ export default function PhotosPage() {
                         size="small"
                         color="error"
                         onClick={() => setDeleteId(photo._id)}
-                        sx={{ bgcolor: "rgba(255,255,255,0.9)" }}
+                        sx={{ bgcolor: "rgba(13,19,34,0.88)", border: "1px solid #334155" }}
                         aria-label="Delete photo"
                       >
                         <FaTrash />

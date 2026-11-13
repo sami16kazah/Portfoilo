@@ -8,6 +8,7 @@ import { Book } from "@/models/Book";
 import { Education } from "@/models/Education";
 import { Certification } from "@/models/Certification";
 import { Job } from "@/models/Job";
+import { SiteSettings } from "@/models/SiteSettings";
 import {
   AWS_CLOUD_SKILLS,
   DEFAULT_BOOKS,
@@ -17,8 +18,10 @@ import {
   DEFAULT_PHOTOS,
   DEFAULT_PROFILE,
   DEFAULT_PROJECTS,
+  DEFAULT_SITE_SETTINGS,
   DEFAULT_SKILLS,
   mergeProfileWithDefaults,
+  mergeSiteSettingsWithDefaults,
   mergeWithDefaults,
 } from "@/data/portfolioDefaults";
 import type {
@@ -29,6 +32,7 @@ import type {
   PhotoData,
   ProfileData,
   ProjectData,
+  SiteSettingsData,
   SkillData,
 } from "@/components/portfolio/types";
 
@@ -41,6 +45,7 @@ export interface PortfolioData {
   education: EducationData[];
   certifications: CertificationData[];
   jobs: JobData[];
+  siteSettings: SiteSettingsData;
 }
 
 /**
@@ -59,8 +64,9 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
       education,
       certifications,
       jobs,
+      siteSettings,
     ] = await Promise.all([
-      Project.find().sort({ createdAt: -1 }).lean(),
+      Project.find().sort({ featured: -1, createdAt: -1 }).lean(),
       Skill.find().sort({ proficiency: -1 }).lean(),
       PersonalInfo.findOne().lean(),
       Photo.find().sort({ createdAt: -1 }).lean(),
@@ -68,6 +74,7 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
       Education.find().sort({ year: -1 }).lean(),
       Certification.find().sort({ date: -1 }).lean(),
       Job.find().sort({ isCurrent: -1, order: 1, createdAt: -1 }).lean(),
+      SiteSettings.findOne({ key: "main" }).lean(),
     ]);
 
     const plainProjects = JSON.parse(JSON.stringify(projects || [])) as ProjectData[];
@@ -78,6 +85,7 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
     const plainEducation = JSON.parse(JSON.stringify(education || [])) as EducationData[];
     const plainCerts = JSON.parse(JSON.stringify(certifications || [])) as CertificationData[];
     const plainJobs = JSON.parse(JSON.stringify(jobs || [])) as JobData[];
+    const plainSettings = JSON.parse(JSON.stringify(siteSettings || null)) as Record<string, unknown> | null;
 
     return {
       projects: mergeWithDefaults(
@@ -103,6 +111,7 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
         DEFAULT_JOBS as unknown as Record<string, unknown>[],
         "company"
       ) as unknown as JobData[],
+      siteSettings: mergeSiteSettingsWithDefaults(plainSettings) as SiteSettingsData,
     };
   } catch (error) {
     console.warn("Using static portfolio defaults (database unavailable):", error);
@@ -115,6 +124,7 @@ export const getPortfolioData = cache(async (): Promise<PortfolioData> => {
       education: DEFAULT_EDUCATION,
       certifications: DEFAULT_CERTIFICATIONS,
       jobs: DEFAULT_JOBS,
+      siteSettings: DEFAULT_SITE_SETTINGS,
     };
   }
 });

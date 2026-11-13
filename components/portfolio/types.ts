@@ -213,6 +213,32 @@ export interface PhotoData {
   category?: string;
 }
 
+export interface SiteSettingsData {
+  key?: string;
+  heroBadge?: string;
+  heroBadge_de?: string;
+  heroBadge_ar?: string;
+  availabilityLabel?: string;
+  availabilityLabel_de?: string;
+  availabilityLabel_ar?: string;
+  locationLabel?: string;
+  locationLabel_de?: string;
+  locationLabel_ar?: string;
+  featuredCompanyLabel?: string;
+  featuredProjectLabel?: string;
+  serviceOptions?: string[];
+  budgetOptions?: string[];
+  showExperienceSection?: boolean;
+  showPerformanceTelemetry?: boolean;
+  showProjectsSection?: boolean;
+  showSkillsSection?: boolean;
+  showBooksSection?: boolean;
+  showEducationSection?: boolean;
+  showGallerySection?: boolean;
+  showContactSection?: boolean;
+  defaultsSyncVersion?: number;
+}
+
 export function getLocalizedValue<T extends object>(
   item: T | null | undefined,
   field: string,

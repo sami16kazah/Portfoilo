@@ -216,7 +216,7 @@ export default function AdminSecurityPage() {
                   variant="contained"
                   fullWidth
                   disabled={busyAction !== null}
-                  sx={{ bgcolor: "black", "&:hover": { bgcolor: "#222" } }}
+                  color="primary"
                 >
                   {busyAction === "password" ? "Updating Password..." : "Update Password & Sign Out"}
                 </Button>
@@ -348,8 +348,8 @@ export default function AdminSecurityPage() {
 function AuditRow({ ok, title, detail }: { ok: boolean; title: string; detail: string }) {
   return (
     <div
-      className={`p-3 rounded-lg border flex items-start gap-2.5 ${
-        ok ? "bg-emerald-50/70 border-emerald-200" : "bg-amber-50 border-amber-200"
+      className={`p-3 rounded-xl border flex items-start gap-2.5 ${
+        ok ? "bg-emerald-950/40 border-emerald-500/30" : "bg-amber-950/40 border-amber-500/30"
       }`}
     >
       {ok ? (
@@ -364,3 +364,4 @@ function AuditRow({ ok, title, detail }: { ok: boolean; title: string; detail: s
     </div>
   );
 }
+

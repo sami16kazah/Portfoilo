@@ -155,11 +155,11 @@ export default function BookForm({ params }: { params: Promise<{ id: string }> }
       <Paper className="p-6">
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="flex flex-col sm:flex-row items-center gap-5">
-            <div className="w-56 aspect-video bg-gray-900 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center relative overflow-hidden shrink-0">
+            <div className="w-56 aspect-video bg-[#070B14] border-2 border-dashed border-slate-700 rounded-xl flex items-center justify-center relative overflow-hidden shrink-0">
               {formData.coverUrl ? (
                 <img src={formData.coverUrl} alt="Cover" className="w-full h-full object-contain" />
               ) : (
-                <FaImage className="text-gray-400 text-3xl" />
+                <FaImage className="text-slate-500 text-3xl" />
               )}
               <div className="absolute inset-0 opacity-0 hover:opacity-100 bg-black/60 flex items-center justify-center transition-opacity cursor-pointer">
                 <CloudinaryUploadButton
@@ -251,7 +251,7 @@ export default function BookForm({ params }: { params: Promise<{ id: string }> }
 
           <Divider />
 
-          <Box className="rounded-lg border border-gray-200 bg-gray-50/70 p-4 space-y-3">
+          <Box className="rounded-xl border border-slate-800 bg-[#070B14] p-4 space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
                 <Typography variant="subtitle1" fontWeight="bold">
@@ -358,7 +358,7 @@ export default function BookForm({ params }: { params: Promise<{ id: string }> }
           </div>
 
           <div className="flex gap-4 pt-4">
-            <Button type="submit" variant="contained" className="bg-black hover:bg-gray-800">
+            <Button type="submit" variant="contained" color="primary">
               Save
             </Button>
             <Button variant="outlined" onClick={() => router.back()}>

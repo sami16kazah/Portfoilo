@@ -82,7 +82,7 @@ export default function JobsPage() {
           <Button
             variant="contained"
             startIcon={<FaPlus />}
-            sx={{ bgcolor: "black", "&:hover": { bgcolor: "#333" } }}
+            color="primary"
           >
             Add Job
           </Button>
@@ -91,7 +91,7 @@ export default function JobsPage() {
 
       <TableContainer component={Paper} elevation={0} className="border rounded-lg overflow-hidden">
         <Table sx={{ minWidth: 650 }}>
-          <TableHead className="bg-gray-50">
+          <TableHead>
             <TableRow>
               <TableCell className="font-semibold">Company</TableCell>
               <TableCell className="font-semibold">Role</TableCell>
@@ -104,8 +104,8 @@ export default function JobsPage() {
           <TableBody>
             {jobs.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} align="center" className="py-8 text-gray-500">
-                  No jobs stored in database yet. Built-in CloudVibe fallback is active on the public site.
+                <TableCell colSpan={6} align="center" sx={{ py: 6, color: "text.secondary" }}>
+                  No jobs stored in database yet. Click Add Job or Sync Defaults in Overview.
                 </TableCell>
               </TableRow>
             ) : (

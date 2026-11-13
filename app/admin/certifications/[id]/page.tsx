@@ -100,7 +100,7 @@ export default function CertificationForm({ params }: { params: Promise<{ id: st
               type="submit"
               variant="contained"
               fullWidth
-              sx={{ bgcolor: 'black', '&:hover': { bgcolor: '#333' } }}
+              color="primary"
             >
               Save
             </Button>

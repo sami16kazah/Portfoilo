@@ -62,7 +62,7 @@ export default function BooksPage() {
           href="/admin/books/new" 
           variant="contained" 
           startIcon={<FaPlus />}
-          className="bg-black hover:bg-gray-800"
+          color="primary"
         >
           Add Book
         </Button>

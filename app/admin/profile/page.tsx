@@ -166,11 +166,11 @@ export default function ProfilePage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="flex flex-col sm:flex-row gap-6 items-start">
              <div className="space-y-2 text-center shrink-0">
-                 <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-200 relative group mx-auto">
+                 <div className="w-32 h-32 rounded-full overflow-hidden bg-[#070B14] border-2 border-slate-700 relative group mx-auto">
                     {formData.avatarUrl ? (
                       <img src={formData.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
                     ) : (
-                      <FaUserCircle className="w-full h-full text-gray-300" />
+                      <FaUserCircle className="w-full h-full text-slate-500" />
                     )}
                  </div>
                  <CloudinaryUploadButton 
@@ -324,7 +324,7 @@ export default function ProfilePage() {
           </div>
           <div className="space-y-4">
              {formData.languages.map((lang, index) => (
-                <div key={index} className="flex gap-4 items-center bg-gray-50 p-4 rounded border">
+                <div key={index} className="flex gap-4 items-center bg-[#070B14] p-4 rounded-xl border border-slate-800">
                     <TextField
                         label="Language (EN)"
                         value={lang.name}
@@ -427,7 +427,7 @@ export default function ProfilePage() {
                <CloudinaryUploadButton 
                     signatureEndpoint="/api/sign-cloudinary-params"
                     onSuccess={(result) => handleUploadSuccess(result, 'cvUrl')}
-                    className="px-4 py-3 bg-gray-200 rounded hover:bg-gray-300 whitespace-nowrap"
+                    className="px-4 py-3 bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 rounded-xl whitespace-nowrap transition-colors"
                  >
                     Upload CV
                  </CloudinaryUploadButton>
@@ -440,7 +440,7 @@ export default function ProfilePage() {
             size="large"
             disabled={loading}
             startIcon={<FaSave />}
-            sx={{ bgcolor: 'black', '&:hover': { bgcolor: '#333' } }}
+            color="primary"
           >
             {loading ? "Saving..." : "Save Profile"}
           </Button>

@@ -79,11 +79,8 @@ export default function ProjectsPage() {
         <Link href="/admin/projects/new">
           <Button 
             variant="contained" 
+            color="primary"
             startIcon={<FaPlus />}
-            sx={{ 
-              bgcolor: 'black', 
-              '&:hover': { bgcolor: '#333' } 
-            }}
           >
             Add New Project
           </Button>
@@ -92,7 +89,7 @@ export default function ProjectsPage() {
 
       <TableContainer component={Paper} elevation={0} className="border rounded-lg overflow-hidden">
         <Table sx={{ minWidth: 650 }}>
-          <TableHead className="bg-gray-50">
+          <TableHead>
             <TableRow>
               <TableCell className="font-semibold">Title</TableCell>
               <TableCell className="font-semibold">Tags</TableCell>
@@ -104,7 +101,7 @@ export default function ProjectsPage() {
           <TableBody>
             {projects.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} align="center" className="py-8 text-gray-500">
+                <TableCell colSpan={5} align="center" sx={{ py: 6, color: "text.secondary" }}>
                   No projects found. Create one to get started.
                 </TableCell>
               </TableRow>

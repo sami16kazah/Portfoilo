@@ -56,6 +56,7 @@ export async function PortfolioPageContent({
         education={data.education}
         certifications={data.certifications}
         jobs={data.jobs}
+        siteSettings={data.siteSettings}
       />
     </>
   );

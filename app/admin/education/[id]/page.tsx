@@ -153,7 +153,7 @@ export default function EducationForm({ params }: { params: Promise<{ id: string
           </div>
 
           <div className="flex gap-4 pt-4">
-            <Button type="submit" variant="contained" className="bg-black hover:bg-gray-800">
+            <Button type="submit" variant="contained" color="primary">
               Save
             </Button>
             <Button variant="outlined" onClick={() => router.back()}>

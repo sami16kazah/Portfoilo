@@ -18,6 +18,7 @@ import {
   PhotoData,
   ProfileData,
   ProjectData,
+  SiteSettingsData,
   SkillData,
 } from "@/components/portfolio/types";
 
@@ -30,6 +31,7 @@ interface ClientHomeProps {
   education: EducationData[];
   certifications: CertificationData[];
   jobs: JobData[];
+  siteSettings?: SiteSettingsData;
 }
 
 export default function ClientHome({
@@ -41,27 +43,54 @@ export default function ClientHome({
   education,
   certifications,
   jobs,
+  siteSettings,
 }: ClientHomeProps) {
   const { locale } = useLocale();
   const dir = locale === "ar" ? "rtl" : "ltr";
+
+  const currentJob = jobs.find((j) => j.isCurrent) || jobs[0];
+  const featuredProject = projects.find((p) => p.featured) || projects[0];
+
+  const showExperience = siteSettings?.showExperienceSection !== false;
+  const showTelemetry = siteSettings?.showPerformanceTelemetry !== false;
+  const showProjects = siteSettings?.showProjectsSection !== false;
+  const showSkills = siteSettings?.showSkillsSection !== false;
+  const showEducation = siteSettings?.showEducationSection !== false;
+  const showBooks = siteSettings?.showBooksSection !== false;
+  const showGallery = siteSettings?.showGallerySection !== false;
+  const showContact = siteSettings?.showContactSection !== false;
 
   return (
     <div
       dir={dir}
       className="min-h-screen bg-[#060911] text-slate-50 selection:bg-indigo-500 selection:text-white"
     >
-      <Navbar />
+      <Navbar profile={profile} siteSettings={siteSettings} />
       <main>
-        <HeroSection profile={profile} />
-        <ExperiencePerformanceSection jobs={jobs} />
-        <ProjectShowcaseSection projects={projects} />
-        <SkillsSection skills={skills} />
-        <CredentialsSection
-          education={education}
-          certifications={certifications}
+        <HeroSection
+          profile={profile}
+          siteSettings={siteSettings}
+          currentJob={currentJob}
+          featuredProject={featuredProject}
         />
-        <BooksShowcaseSection books={books} />
-        <GalleryContactSection photos={photos} profile={profile} />
+        {showExperience && (
+          <ExperiencePerformanceSection jobs={jobs} showTelemetry={showTelemetry} />
+        )}
+        {showProjects && <ProjectShowcaseSection projects={projects} />}
+        {showSkills && <SkillsSection skills={skills} />}
+        {showEducation && (
+          <CredentialsSection
+            education={education}
+            certifications={certifications}
+          />
+        )}
+        {showBooks && <BooksShowcaseSection books={books} />}
+        <GalleryContactSection
+          photos={showGallery ? photos : []}
+          profile={profile}
+          siteSettings={siteSettings}
+          showContact={showContact}
+        />
       </main>
     </div>
   );

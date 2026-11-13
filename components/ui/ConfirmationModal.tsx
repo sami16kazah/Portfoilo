@@ -39,15 +39,15 @@ export function ConfirmationModal({
   const modalRoot = document.querySelector(".modal-container") || document.body;
 
   return ReactDOM.createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-md w-full p-6 animate-in fade-in zoom-in-95 duration-200">
-        <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-gray-100">{title}</h3>
-        <p className="text-gray-600 dark:text-gray-300 mb-6">{description}</p>
-        
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+      <div className="bg-[#0D1322] border border-slate-700/80 rounded-2xl shadow-2xl max-w-md w-full p-6 text-slate-100">
+        <h3 className="text-xl font-bold mb-2 text-white">{title}</h3>
+        <p className="text-slate-300 text-sm leading-relaxed mb-6">{description}</p>
+
         <div className="flex gap-3 justify-end">
           <Button
             onClick={onClose}
-            className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200"
+            className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700"
           >
             {cancelText}
           </Button>
@@ -57,9 +57,9 @@ export function ConfirmationModal({
               onClose();
             }}
             className={`flex-1 text-white ${
-              isDestructive 
-                ? "bg-red-600 hover:bg-red-700" 
-                : "bg-blue-600 hover:bg-blue-700"
+              isDestructive
+                ? "bg-rose-600 hover:bg-rose-500"
+                : "bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-semibold"
             }`}
           >
             {confirmText}
