@@ -340,9 +340,6 @@ export default function DashboardOverviewClient() {
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-emerald-500/15 border border-emerald-500/35 text-emerald-300 text-[11px] font-bold uppercase tracking-wider">
                   <SparklesIcon sx={{ fontSize: 13 }} /> Live Portfolio Studio
                 </span>
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-[#060A14] border border-slate-800 text-slate-300 text-[11px] font-medium">
-                  {settingsForm.heroBadge || "Software Engineer"}
-                </span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
                 {data.profile.name || "Sami Kazah"}
@@ -472,7 +469,7 @@ export default function DashboardOverviewClient() {
               Dynamic Site Controls & Section Switchboard
             </h2>
             <p className="text-xs text-slate-400 mt-1">
-              Customize Hero status pills, company/project spotlight labels, contact topic chips, and show or hide sections on the live site.
+              Customize company/project spotlight labels, contact location & topic chips, and show or hide sections on the live site.
             </p>
           </div>
           <Button
@@ -488,63 +485,12 @@ export default function DashboardOverviewClient() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left: Dynamic Hero, Availability & Location Texts */}
+          {/* Left: Hero Spotlight Labels & Localized Location */}
           <div className="lg:col-span-7 space-y-4">
             <div className="rounded-2xl bg-[#070B14] border border-slate-800 p-4 space-y-4">
               <Typography variant="subtitle2" fontWeight={700} color="#E2E8F0">
-                Hero Role Pill & Availability Status (EN / DE / AR)
+                Contact Location (EN / DE / AR) & Hero Spotlight Labels
               </Typography>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <TextField
-                  label="Hero Badge (EN)"
-                  size="small"
-                  value={settingsForm.heroBadge || ""}
-                  onChange={(e) => setSettingsForm({ ...settingsForm, heroBadge: e.target.value })}
-                />
-                <TextField
-                  label="Hero Badge (DE)"
-                  size="small"
-                  value={settingsForm.heroBadge_de || ""}
-                  onChange={(e) => setSettingsForm({ ...settingsForm, heroBadge_de: e.target.value })}
-                />
-                <TextField
-                  label="Hero Badge (AR)"
-                  size="small"
-                  dir="rtl"
-                  value={settingsForm.heroBadge_ar || ""}
-                  onChange={(e) => setSettingsForm({ ...settingsForm, heroBadge_ar: e.target.value })}
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <TextField
-                  label="Availability Tag (EN)"
-                  size="small"
-                  placeholder="Optional green pulse badge"
-                  value={settingsForm.availabilityLabel || ""}
-                  onChange={(e) =>
-                    setSettingsForm({ ...settingsForm, availabilityLabel: e.target.value })
-                  }
-                />
-                <TextField
-                  label="Availability Tag (DE)"
-                  size="small"
-                  value={settingsForm.availabilityLabel_de || ""}
-                  onChange={(e) =>
-                    setSettingsForm({ ...settingsForm, availabilityLabel_de: e.target.value })
-                  }
-                />
-                <TextField
-                  label="Availability Tag (AR)"
-                  size="small"
-                  dir="rtl"
-                  value={settingsForm.availabilityLabel_ar || ""}
-                  onChange={(e) =>
-                    setSettingsForm({ ...settingsForm, availabilityLabel_ar: e.target.value })
-                  }
-                />
-              </div>
-
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <TextField
                   label="Contact Location (EN)"
@@ -554,6 +500,26 @@ export default function DashboardOverviewClient() {
                     setSettingsForm({ ...settingsForm, locationLabel: e.target.value })
                   }
                 />
+                <TextField
+                  label="Contact Location (DE)"
+                  size="small"
+                  value={settingsForm.locationLabel_de || ""}
+                  onChange={(e) =>
+                    setSettingsForm({ ...settingsForm, locationLabel_de: e.target.value })
+                  }
+                />
+                <TextField
+                  label="Contact Location (AR)"
+                  size="small"
+                  dir="rtl"
+                  value={settingsForm.locationLabel_ar || ""}
+                  onChange={(e) =>
+                    setSettingsForm({ ...settingsForm, locationLabel_ar: e.target.value })
+                  }
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <TextField
                   label="Company Card Label"
                   size="small"

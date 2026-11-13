@@ -10,7 +10,6 @@ import {
   FaEnvelope,
   FaFileDownload,
   FaArrowDown,
-  FaBuilding,
   FaGlobe,
 } from "react-icons/fa";
 import { useLocale } from "@/app/context/LocalContext";
@@ -39,12 +38,6 @@ export default function HeroSection({
   const { locale, t } = useLocale();
   const prefersReducedMotion = useReducedMotion();
 
-  const heroBadgeText =
-    getLocalizedText(siteSettings, "heroBadge", locale, "") ||
-    (currentJob
-      ? `${getLocalizedText(currentJob, "role", locale, currentJob.role)} · ${currentJob.company}`
-      : t.hero.badge);
-  const availabilityText = getLocalizedText(siteSettings, "availabilityLabel", locale, "");
   const companyLabel = siteSettings?.featuredCompanyLabel || "Company";
   const companyHref = currentJob?.companyUrl || "https://cloudvibe.de/";
   const companyLogo = currentJob?.logoUrl || "/assets/companies/cloudvibe-logo.webp";
@@ -111,26 +104,6 @@ export default function HeroSection({
             transition={{ duration: 0.45, ease: "easeOut" }}
             className="lg:col-span-7 space-y-6"
           >
-            {/* Current job & availability pills */}
-            <div className="flex flex-wrap items-center gap-2.5">
-              <a
-                href="#experience"
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-900/90 border border-slate-700/80 text-slate-200 text-sm font-medium hover:border-slate-500 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
-              >
-                <FaBuilding className="text-indigo-300 text-xs" aria-hidden="true" />
-                <span>{heroBadgeText}</span>
-              </a>
-              {availabilityText && (
-                <a
-                  href="#contact"
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 text-xs font-semibold hover:border-emerald-400/60 transition-colors"
-                >
-                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true" />
-                  <span>{availabilityText}</span>
-                </a>
-              )}
-            </div>
-
             <div className="space-y-3">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.15] flex flex-wrap items-baseline gap-x-4 gap-y-1">
                 <span>{displayName}</span>
