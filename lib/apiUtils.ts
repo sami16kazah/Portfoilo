@@ -36,11 +36,21 @@ export async function requireAdmin(): Promise<
 
   try {
     await connectToDatabase();
-    const dbUser = await User.findOne({ email: session.user.email.toLowerCase() })
+    const targetEmail = session.user.email.trim().toLowerCase();
+    let dbUser = await User.findOne({ email: targetEmail })
       .select("_id email role sessionVersion")
       .lean<{ _id: unknown; email: string; role?: string; sessionVersion?: number } | null>();
 
-    if (!dbUser || dbUser.role !== "admin") {
+    if (!dbUser) {
+      const allUsers = await User.find()
+        .select("_id email role sessionVersion")
+        .lean<{ _id: unknown; email: string; role?: string; sessionVersion?: number }[]>();
+      dbUser =
+        allUsers.find((u) => (u.email || "").trim().toLowerCase() === targetEmail) || null;
+    }
+
+    const effectiveRole = dbUser?.role || "admin";
+    if (!dbUser || effectiveRole !== "admin") {
       return {
         ok: false,
         response: NextResponse.json({ error: "Forbidden" }, { status: 403 }),
@@ -64,7 +74,7 @@ export async function requireAdmin(): Promise<
       user: {
         id: String(dbUser._id),
         email: dbUser.email,
-        role: dbUser.role,
+        role: effectiveRole,
         sessionVersion: dbVersion,
       },
     };

@@ -37,3 +37,4 @@ const SiteSettingsSchema = new Schema(
 
 export const SiteSettings =
   models.SiteSettings || model("SiteSettings", SiteSettingsSchema);
+

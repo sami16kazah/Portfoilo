@@ -265,7 +265,7 @@ export default function AdminSecurityPage() {
               </CardContent>
             </Card>
 
-            <Card className="border border-red-200 bg-red-50/40">
+            <Card className="border border-rose-500/30 bg-rose-950/25">
               <CardContent className="space-y-3">
                 <Typography variant="subtitle1" fontWeight="bold" color="error">
                   Emergency Session Revocation
@@ -291,7 +291,7 @@ export default function AdminSecurityPage() {
 
       {/* Hardening Audit Summary */}
       {state && (
-        <Card className="border border-slate-200">
+        <Card className="border border-slate-800">
           <CardContent className="space-y-3">
             <Typography variant="h6" fontWeight="bold">
               Environment & Platform Security Audit
@@ -358,8 +358,8 @@ function AuditRow({ ok, title, detail }: { ok: boolean; title: string; detail: s
         <FaExclamationTriangle className="text-amber-600 mt-0.5 shrink-0" />
       )}
       <div>
-        <div className="font-semibold text-slate-900 text-xs">{title}</div>
-        <div className="text-xs text-slate-600 mt-0.5">{detail}</div>
+        <div className="font-semibold text-slate-100 text-xs">{title}</div>
+        <div className="text-xs text-slate-400 mt-0.5">{detail}</div>
       </div>
     </div>
   );

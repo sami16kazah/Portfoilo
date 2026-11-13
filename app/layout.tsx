@@ -54,6 +54,7 @@ export default async function RootLayout({
       lang={initialLocale}
       dir={initialLocale === "ar" ? "rtl" : "ltr"}
       className="scroll-smooth"
+      suppressHydrationWarning
     >
       <body
         className={cn(

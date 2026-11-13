@@ -12,7 +12,8 @@ export default auth((req) => {
   const isOnSetup = pathname.startsWith("/setup");
 
   if (isOnAdmin) {
-    if (isOnLogin && isAdmin) {
+    const hasResetReason = req.nextUrl.searchParams.has("reason");
+    if (isOnLogin && isAdmin && !hasResetReason) {
       return NextResponse.redirect(new URL("/admin/dashboard", req.url));
     }
     if (!isOnLogin && !isAdmin) {

@@ -33,10 +33,73 @@ import {
 } from "@mui/icons-material";
 import type { ProfileData, SiteSettingsData } from "@/components/portfolio/types";
 
-interface SecurityDiagnostic {
+interface SecurityDiagnosticsObject {
+  hasAuthSecret?: boolean;
+  cloudinarySecretNonPublic?: boolean;
+  cloudinarySecretLegacyPublic?: boolean;
+  hasDatabaseUri?: boolean;
+  hasSetupToken?: boolean;
+  hasMailjet?: boolean;
+  isProduction?: boolean;
+}
+
+interface SecurityAuditItem {
   label: string;
   ok: boolean;
   detail: string;
+}
+
+function buildSecurityAuditList(security?: OverviewPayload["security"] | null): SecurityAuditItem[] {
+  const raw = security?.diagnostics;
+  if (Array.isArray(raw)) return raw;
+
+  const diag = (raw || {}) as SecurityDiagnosticsObject;
+  return [
+    {
+      label: "Setup Route Lock",
+      ok: Boolean(security?.setupLocked),
+      detail: security?.setupLocked
+        ? "Locked permanently after admin initialization."
+        : "No admin account locked yet.",
+    },
+    {
+      label: "Auth Signing Secret",
+      ok: Boolean(diag.hasAuthSecret),
+      detail: diag.hasAuthSecret
+        ? "Configured securely in server environment."
+        : "Set AUTH_SECRET in Vercel environment variables.",
+    },
+    {
+      label: "MongoDB Connection",
+      ok: Boolean(diag.hasDatabaseUri),
+      detail: diag.hasDatabaseUri
+        ? "MONGODB_URI configured on server."
+        : "Missing MONGODB_URI environment variable.",
+    },
+    {
+      label: "Cloudinary API Secret",
+      ok: Boolean(diag.cloudinarySecretNonPublic),
+      detail: diag.cloudinarySecretNonPublic
+        ? "Stored in server-only CLOUDINARY_API_SECRET."
+        : diag.cloudinarySecretLegacyPublic
+        ? "Using NEXT_PUBLIC_ fallback; switch to CLOUDINARY_API_SECRET."
+        : "Optional media signing secret not set.",
+    },
+    {
+      label: "Setup Token Guard",
+      ok: Boolean(diag.hasSetupToken),
+      detail: diag.hasSetupToken
+        ? "ADMIN_SETUP_TOKEN is active."
+        : "Setup relies on first-user lock; ADMIN_SETUP_TOKEN optional.",
+    },
+    {
+      label: "Contact Mailer (Mailjet)",
+      ok: Boolean(diag.hasMailjet),
+      detail: diag.hasMailjet
+        ? "Mailjet API credentials configured."
+        : "Configure Mailjet keys to send contact emails.",
+    },
+  ];
 }
 
 interface OverviewPayload {
@@ -111,7 +174,7 @@ interface OverviewPayload {
   security: {
     adminEmail: string;
     setupLocked: boolean;
-    diagnostics: SecurityDiagnostic[];
+    diagnostics: SecurityDiagnosticsObject | SecurityAuditItem[];
   };
 }
 
@@ -256,8 +319,9 @@ export default function DashboardOverviewClient() {
   const currentJob = data.previews.jobs.find((j) => j.isCurrent) || data.previews.jobs[0];
   const featuredProject =
     data.previews.projects.find((p) => p.featured) || data.previews.projects[0];
-  const secPassing = data.security.diagnostics.filter((d) => d.ok).length;
-  const secTotal = data.security.diagnostics.length;
+  const securityItems = buildSecurityAuditList(data.security);
+  const secPassing = securityItems.filter((d) => d.ok).length;
+  const secTotal = securityItems.length;
 
   return (
     <div className="space-y-8">
@@ -983,7 +1047,7 @@ export default function DashboardOverviewClient() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {data.security.diagnostics.map((diag) => (
+          {securityItems.map((diag) => (
             <div
               key={diag.label}
               className="p-3.5 rounded-2xl bg-[#070B14] border border-slate-800 flex items-start gap-2.5"

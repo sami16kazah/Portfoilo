@@ -1,14 +1,55 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
+import createCache from "@emotion/cache";
+import { CacheProvider } from "@emotion/react";
+import { useServerInsertedHTML } from "next/navigation";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
 
 export default function AdminMuiThemeProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [{ cache, flush }] = useState(() => {
+    const emotionCache = createCache({ key: "mui" });
+    emotionCache.compat = true;
+    const prevInsert = emotionCache.insert;
+    let inserted: string[] = [];
+
+    emotionCache.insert = (...args) => {
+      const serialized = args[1];
+      if (emotionCache.inserted[serialized.name] === undefined) {
+        inserted.push(serialized.name);
+      }
+      return prevInsert(...args);
+    };
+
+    const flushNames = () => {
+      const prevInserted = inserted;
+      inserted = [];
+      return prevInserted;
+    };
+
+    return { cache: emotionCache, flush: flushNames };
+  });
+
+  useServerInsertedHTML(() => {
+    const names = flush();
+    if (names.length === 0) return null;
+    let styles = "";
+    for (const name of names) {
+      styles += cache.inserted[name];
+    }
+    return (
+      <style
+        key={cache.key}
+        data-emotion={`${cache.key} ${names.join(" ")}`}
+        dangerouslySetInnerHTML={{ __html: styles }}
+      />
+    );
+  });
+
   const theme = useMemo(
     () =>
       createTheme({
@@ -161,9 +202,8 @@ export default function AdminMuiThemeProvider({
   );
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      {children}
-    </ThemeProvider>
+    <CacheProvider value={cache}>
+      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+    </CacheProvider>
   );
 }
