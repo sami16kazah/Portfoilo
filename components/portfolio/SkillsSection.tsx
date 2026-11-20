@@ -1,173 +1,142 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import type { IconType } from "react-icons";
+import React, { useMemo, useState } from 'react';
 import {
-  FaAws,
-  FaCloud,
-  FaCode,
-  FaDatabase,
-  FaServer,
-  FaShieldAlt,
-} from "react-icons/fa";
+  Activity,
+  Cloud,
+  Code2,
+  Cpu,
+  Database,
+  HardDrive,
+  Lock,
+  Server,
+} from 'lucide-react';
 import {
-  SiAmazonapigateway,
-  SiAmazoncloudwatch,
-  SiAmazondynamodb,
-  SiAmazonec2,
-  SiAmazonecs,
-  SiAmazoniam,
-  SiAmazonrds,
-  SiAmazonroute53,
-  SiAmazons3,
-  SiAmazonwebservices,
-  SiAwsfargate,
-  SiAwslambda,
-} from "react-icons/si";
-import { useLocale } from "@/app/context/LocalContext";
-import { SkillData, getLocalizedText } from "./types";
+  PORTFOLIO_COPY,
+  getLocalizedText,
+  resolveAssetUrl,
+  type Locale,
+  type SkillData,
+} from './portfolioCopy';
+import { SectionHeader } from './SectionHeader';
 
 interface SkillsSectionProps {
+  locale: Locale;
   skills: SkillData[];
 }
 
-const SKILL_ICON_MAP: Record<string, { Icon: IconType; colorClass: string }> = {
-  FaAws: { Icon: FaAws, colorClass: "text-[#FF9900]" },
-  FaCloud: { Icon: FaCloud, colorClass: "text-cyan-400" },
-  FaServer: { Icon: FaServer, colorClass: "text-slate-300" },
-  FaDatabase: { Icon: FaDatabase, colorClass: "text-sky-400" },
-  FaShieldAlt: { Icon: FaShieldAlt, colorClass: "text-rose-400" },
-  SiAmazonwebservices: { Icon: SiAmazonwebservices, colorClass: "text-[#FF9900]" },
-  SiAmazonec2: { Icon: SiAmazonec2, colorClass: "text-[#FF9900]" },
-  SiAmazons3: { Icon: SiAmazons3, colorClass: "text-emerald-400" },
-  SiAmazonrds: { Icon: SiAmazonrds, colorClass: "text-sky-400" },
-  SiAwslambda: { Icon: SiAwslambda, colorClass: "text-amber-400" },
-  SiAmazoniam: { Icon: SiAmazoniam, colorClass: "text-rose-400" },
-  SiAmazoncloudwatch: { Icon: SiAmazoncloudwatch, colorClass: "text-pink-400" },
-  SiAmazonroute53: { Icon: SiAmazonroute53, colorClass: "text-violet-400" },
-  SiAmazonapigateway: { Icon: SiAmazonapigateway, colorClass: "text-fuchsia-400" },
-  SiAmazondynamodb: { Icon: SiAmazondynamodb, colorClass: "text-blue-400" },
-  SiAmazonecs: { Icon: SiAmazonecs, colorClass: "text-orange-400" },
-  SiAwsfargate: { Icon: SiAwsfargate, colorClass: "text-orange-300" },
-};
-
-function isImagePath(icon?: string): boolean {
-  if (!icon) return false;
-  return icon.startsWith("/") || icon.startsWith("http://") || icon.startsWith("https://") || icon.startsWith("data:");
+function renderCloudIcon(iconName?: string) {
+  switch (iconName) {
+    case 'SiAmazonec2':
+      return <Server size={20} style={{ color: '#f59e0b' }} />;
+    case 'SiAmazons3':
+      return <HardDrive size={20} style={{ color: '#10b981' }} />;
+    case 'SiAmazonrds':
+      return <Database size={20} style={{ color: '#38bdf8' }} />;
+    case 'SiAwslambda':
+      return <Cpu size={20} style={{ color: '#fbbf24' }} />;
+    case 'SiAmazoniam':
+      return <Lock size={20} style={{ color: '#f43f5e' }} />;
+    case 'SiAmazoncloudwatch':
+      return <Activity size={20} style={{ color: '#ec4899' }} />;
+    case 'SiAmazonwebservices':
+    case 'FaAws':
+      return <Cloud size={20} style={{ color: '#f59e0b' }} />;
+    default:
+      return <Code2 size={18} style={{ color: 'var(--sk-indigo)' }} />;
+  }
 }
 
-function SkillIconBadge({
-  icon,
-  category,
-  label,
-}: {
-  icon?: string;
-  category?: string;
-  label: string;
-}) {
-  if (isImagePath(icon)) {
-    return (
-      <img
-        src={icon}
-        alt={label}
-        className="w-full h-full object-contain"
-      />
-    );
-  }
-
-  const mapped = icon ? SKILL_ICON_MAP[icon] : undefined;
-  if (mapped) {
-    const { Icon, colorClass } = mapped;
-    return <Icon className={`w-6 h-6 ${colorClass}`} aria-hidden="true" />;
-  }
-
-  if ((category || "").toLowerCase() === "cloud") {
-    return <FaAws className="w-6 h-6 text-[#FF9900]" aria-hidden="true" />;
-  }
-
-  return <FaCode className="w-5 h-5 text-slate-300" aria-hidden="true" />;
-}
-
-export default function SkillsSection({ skills }: SkillsSectionProps) {
-  const { locale, t } = useLocale();
-  const prefersReducedMotion = useReducedMotion();
-  const [selectedCategory, setSelectedCategory] = useState("All");
+export const SkillsSection: React.FC<SkillsSectionProps> = ({ locale, skills }) => {
+  const copy = PORTFOLIO_COPY[locale];
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
   const categories = useMemo(() => {
-    const unique = Array.from(new Set(skills.map((s) => s.category || "Other")));
-    return ["All", ...unique];
+    const unique = Array.from(new Set(skills.map((s) => s.category || 'Other')));
+    return ['All', ...unique];
   }, [skills]);
 
   const filtered = useMemo(() => {
-    if (selectedCategory === "All") return skills;
-    return skills.filter((s) => (s.category || "Other") === selectedCategory);
+    if (selectedCategory === 'All') return skills;
+    return skills.filter((s) => (s.category || 'Other') === selectedCategory);
   }, [skills, selectedCategory]);
 
   if (!skills || skills.length === 0) return null;
 
   return (
-    <section id="skills" className="py-24 bg-[#070B14] border-t border-slate-800/80">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            {t.skills.heading}
-          </h2>
+    <section id="skills" className="sk-section">
+      <div className="sk-container">
+        <SectionHeader
+          code={copy.sections.skills.code}
+          label={copy.sections.skills.label}
+          meta={copy.sections.skills.meta}
+        />
 
-          <div className="flex flex-wrap gap-2" role="tablist" aria-label="Filter skills by category">
+        <div className="sk-skills-head">
+          <div>
+            <h2 className="sk-display-h2">
+              {copy.skills.heading}{' '}
+              <span className="sk-brand-highlight">{copy.skills.headingAccent}</span>
+            </h2>
+            <p className="sk-lead">{copy.skills.subtitle}</p>
+          </div>
+
+          <div className="sk-filter-row" role="tablist" aria-label="Filter skills">
             {categories.map((cat) => {
               const active = selectedCategory === cat;
-              const categoryLabel =
-                cat === "All"
-                  ? t.skills.all
-                  : t.skills.categories?.[cat] || cat;
+              const label = cat === 'All' ? copy.skills.all : copy.skills.categories[cat] || cat;
               return (
                 <button
                   key={cat}
                   type="button"
                   role="tab"
                   aria-selected={active}
+                  className={`sk-filter-btn ${active ? 'is-active' : ''}`}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold border transition-colors ${
-                    active
-                      ? "bg-emerald-800 text-white border-emerald-400"
-                      : "bg-[#0D1322] text-slate-300 border-slate-800 hover:border-slate-600 hover:text-white"
-                  }`}
                 >
-                  {categoryLabel}
+                  {label}
                 </button>
               );
             })}
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5">
-          {filtered.map((skill, idx) => {
-            const label = getLocalizedText(skill, "name", locale, skill.name);
-            const cat = skill.category || "Other";
-            const catLabel = t.skills.categories?.[cat] || cat;
+        <div className="sk-skills-grid">
+          {filtered.map((skill) => {
+            const label = getLocalizedText(skill, 'name', locale, skill.name);
+            const cat = skill.category || 'Other';
+            const catLabel = copy.skills.categories[cat] || cat;
+            const isImg = Boolean(
+              skill.icon &&
+                (skill.icon.startsWith('/') ||
+                  skill.icon.startsWith('./') ||
+                  skill.icon.startsWith('http'))
+            );
+            const prof = Math.min(100, Math.max(20, skill.proficiency || 82));
 
             return (
-              <motion.div
-                key={skill._id || skill.name || idx}
-                initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.1 }}
-                transition={{ duration: 0.25, delay: (idx % 6) * 0.03 }}
-                className="rounded-2xl bg-[#0D1322] border border-slate-800 hover:border-slate-600 p-4 flex items-center gap-3.5 transition-colors"
-              >
-                <div className="h-10 w-10 rounded-xl bg-slate-900 border border-slate-700/70 flex items-center justify-center shrink-0 p-1.5">
-                  <SkillIconBadge icon={skill.icon} category={cat} label={label} />
+              <div key={skill._id} className="sk-skill-card">
+                <div className="sk-skill-icon-box">
+                  {isImg ? (
+                    <img src={resolveAssetUrl(skill.icon)} alt={label} />
+                  ) : (
+                    renderCloudIcon(skill.icon)
+                  )}
                 </div>
-                <div className="min-w-0">
-                  <div className="text-sm font-bold text-white truncate">{label}</div>
-                  <div className="text-xs text-slate-400 truncate">{catLabel}</div>
+                <div className="sk-skill-info">
+                  <div className="sk-skill-top">
+                    <strong>{label}</strong>
+                    <span className="sk-skill-cat">{catLabel}</span>
+                  </div>
+                  <div className="sk-skill-meter" aria-hidden="true">
+                    <span className="sk-skill-meter-fill" style={{ width: `${prof}%` }} />
+                  </div>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>
       </div>
     </section>
   );
-}
+};

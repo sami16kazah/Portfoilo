@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import {
+  Archivo,
   Bricolage_Grotesque,
+  Geist_Mono,
   IBM_Plex_Sans_Arabic,
+  Inter,
   Oswald,
   Pixelify_Sans,
 } from "next/font/google";
@@ -14,6 +17,21 @@ import { getEnvBaseUrl, isSupportedLocale } from "@/lib/seo";
 const MainFont = Bricolage_Grotesque({
   subsets: ["latin"],
   variable: "--font-main",
+  display: "swap",
+});
+const ArchivoFont = Archivo({
+  subsets: ["latin"],
+  variable: "--font-archivo",
+  display: "swap",
+});
+const InterFont = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+const GeistMonoFont = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
   display: "swap",
 });
 const ArabicFont = IBM_Plex_Sans_Arabic({
@@ -40,6 +58,8 @@ export const metadata: Metadata = {
     "Official portfolio of Sami Kazah (سامي قزح) — Software Engineer at cloudvibe GmbH in Germany & co-developer of shelforia.de.",
 };
 
+const THEME_INIT_SCRIPT = `(function(){try{var p=new URLSearchParams(window.location.search);var u=p.get('theme');var s=localStorage.getItem('sk-portfolio-theme');var t=(u==='light'||u==='dark')?u:(s==='light'||s==='dark')?s:'dark';document.documentElement.setAttribute('data-theme',t);document.documentElement.style.colorScheme=t;}catch(e){}})();`;
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -53,17 +73,24 @@ export default async function RootLayout({
     <html
       lang={initialLocale}
       dir={initialLocale === "ar" ? "rtl" : "ltr"}
+      data-theme="dark"
       className="scroll-smooth"
       suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body
         className={cn(
           MainFont.className,
           MainFont.variable,
+          ArchivoFont.variable,
+          InterFont.variable,
+          GeistMonoFont.variable,
           ArabicFont.variable,
           OswaldFont.variable,
           PixelFont.variable,
-          "bg-[#060911] text-slate-50 antialiased selection:bg-indigo-500 selection:text-white"
+          "antialiased selection:bg-indigo-500 selection:text-white"
         )}
       >
         <LocaleProvider initialLocale={initialLocale}>{children}</LocaleProvider>
