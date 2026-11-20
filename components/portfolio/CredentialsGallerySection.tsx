@@ -157,7 +157,6 @@ export const CredentialsGallerySection: React.FC<CredentialsGallerySectionProps>
                   <img
                     src={resolveAssetUrl(photo.url)}
                     alt={photo.title || `Gallery photo ${idx + 1}`}
-                    loading="lazy"
                   />
                   {photo.title && (
                     <span className="sk-gallery-caption">{photo.title}</span>
