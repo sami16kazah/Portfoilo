@@ -47,7 +47,7 @@ export const PortfolioFooter: React.FC<PortfolioFooterProps> = ({
   const columns = [
     {
       key: 'nav',
-      title: 'NAVIGATION',
+      title: locale === 'ar' ? 'التنقل' : 'NAVIGATION',
       links: [
         { label: copy.nav.experience, action: () => onNavigate('experience') },
         { label: copy.nav.projects, action: () => onNavigate('projects') },
@@ -58,7 +58,7 @@ export const PortfolioFooter: React.FC<PortfolioFooterProps> = ({
     },
     {
       key: 'work',
-      title: 'FLAGSHIP WORK',
+      title: locale === 'ar' ? 'أبرز الأعمال' : locale === 'de' ? 'PROJEKTE' : 'FLAGSHIP WORK',
       links: [
         { label: 'shelforia.de (Cloud ERP)', href: 'https://shelforia.de/' },
         { label: 'cloudvibe GmbH', href: 'https://cloudvibe.de/' },
@@ -68,25 +68,25 @@ export const PortfolioFooter: React.FC<PortfolioFooterProps> = ({
     },
     {
       key: 'books',
-      title: 'PUBLICATIONS',
+      title: locale === 'ar' ? 'المؤلفات' : locale === 'de' ? 'VERÖFFENTLICHUNGEN' : 'PUBLICATIONS',
       links: [
         {
-          label: 'Design Patterns in Arabic',
+          label: locale === 'ar' ? 'أنماط التصميم (Design Patterns)' : 'Design Patterns in Arabic',
           href: 'https://www.kotobati.com/book/design-patterns-arabic',
         },
         {
-          label: 'Compilers Using ANTLR',
+          label: locale === 'ar' ? 'المترجمات باستخدام ANTLR' : 'Compilers Using ANTLR',
           href: 'https://www.kotobati.com/book/%D9%83%D8%AA%D8%A7%D8%A8-%D8%A7%D9%84%D9%85%D8%AA%D8%B1%D8%AC%D9%85%D8%A7%D8%AA-%D8%A8%D8%A7%D8%B3%D8%AA%D8%AE%D8%AF%D8%A7%D9%85-%D8%A7%D9%84-antlr',
         },
         {
-          label: 'Comparative Studies',
+          label: locale === 'ar' ? 'دراسات مقارنة وتحليلية' : 'Comparative Studies',
           href: 'https://www.kotobati.com/book/%D9%83%D8%AA%D8%A7%D8%A8-%D8%A7%D9%84%D8%A5%D8%B3%D9%84%D8%A7%D9%85-%D9%88%D8%A7%D9%84%D8%A5%D8%B1%D9%87%D8%A7%D8%A8',
         },
       ],
     },
     {
       key: 'connect',
-      title: 'CONNECT',
+      title: locale === 'ar' ? 'التواصل' : locale === 'de' ? 'KONTAKT' : 'CONNECT',
       links: [
         { label: email, href: `mailto:${email}` },
         ...(profile.socialLinks?.github
@@ -95,7 +95,7 @@ export const PortfolioFooter: React.FC<PortfolioFooterProps> = ({
         ...(profile.socialLinks?.linkedin
           ? [{ label: 'LinkedIn', href: profile.socialLinks.linkedin }]
           : []),
-        { label: 'Goch, Germany', action: () => onNavigate('contact') },
+        { label: locale === 'ar' ? 'غوخ، ألمانيا' : 'Goch, Germany', action: () => onNavigate('contact') },
       ],
     },
   ];
@@ -198,7 +198,7 @@ export const PortfolioFooter: React.FC<PortfolioFooterProps> = ({
           <div className="sk-horizon-orb sk-horizon-orb-1" aria-hidden="true" />
           <div className="sk-horizon-orb sk-horizon-orb-2" aria-hidden="true" />
           <div className="sk-horizon-orb sk-horizon-orb-3" aria-hidden="true" />
-          <SamiBrandLogo variant="monumental" />
+          <SamiBrandLogo variant="monumental" locale={locale} />
         </div>
 
         {/* Bottom Legal, Language & Back-to-Top Bar */}

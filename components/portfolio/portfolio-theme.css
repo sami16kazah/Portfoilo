@@ -222,52 +222,74 @@ textarea:focus-visible {
   background: var(--bg-card);
 }
 
-/* Unified Single-SVG Scroll Morph: Centered SK Monogram -> Full SAMI KAZAH Wordmark */
+/* Unified Scroll Morph: Centered SK Monogram -> Localized Wordmark Unfolding in LTR & RTL */
 .sk-logo-nav-anim {
   display: inline-flex;
   align-items: center;
   height: 44px;
-  width: 44px;
-  overflow: hidden;
-  transition: width 480ms var(--ease-spring);
+  gap: 0;
+  transition: gap 420ms var(--ease-spring);
 }
 
 .sk-logo-nav-anim.is-expanded {
-  width: 204px;
+  gap: 10px;
 }
 
-.sk-logo-nav-anim-svg {
-  height: 44px;
-  width: 208px;
+.sk-nav-mark-slot {
+  width: 36px;
+  height: 36px;
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sk-nav-mark-svg,
+.sk-logo-mark {
+  width: 100%;
+  height: 100%;
   display: block;
 }
 
-.sk-nav-anim-mark {
-  transform-box: view-box;
-  transform-origin: 32px 36px;
-  transform: translate(3px, 0) scale(1);
-  transition: transform 480ms var(--ease-spring);
-}
-
-.sk-logo-nav-anim.is-expanded .sk-nav-anim-mark {
-  transform: translate(0, 0) scale(0.96);
-}
-
-.sk-nav-anim-wordmark {
+.sk-nav-wordmark-wrap {
+  display: inline-grid;
+  grid-template-columns: 0fr;
   opacity: 0;
-  transform: translateX(-18px);
-  clip-path: inset(0 100% 0 0);
   transition:
-    opacity 300ms ease 40ms,
-    transform 480ms var(--ease-spring),
-    clip-path 480ms var(--ease-spring);
+    grid-template-columns 480ms var(--ease-spring),
+    opacity 320ms ease;
 }
 
-.sk-logo-nav-anim.is-expanded .sk-nav-anim-wordmark {
+.sk-logo-nav-anim.is-expanded .sk-nav-wordmark-wrap {
+  grid-template-columns: 1fr;
   opacity: 1;
-  transform: translateX(0);
-  clip-path: inset(0 0% 0 0);
+}
+
+.sk-nav-wordmark-inner {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  white-space: nowrap;
+  line-height: 1.12;
+  padding-inline-end: 2px;
+}
+
+.sk-nav-wordmark-name {
+  font-family: var(--font-display);
+  font-size: 15.5px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink-strong);
+}
+
+.sk-nav-wordmark-sub {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: var(--ink-muted);
+  margin-top: 2px;
 }
 
 .sk-topbar-nav {
@@ -1972,6 +1994,10 @@ textarea:focus-visible {
   object-fit: contain;
 }
 
+:root:not([data-theme='light']) .sk-skill-img-invert-dark {
+  filter: invert(1) brightness(1.06);
+}
+
 .sk-skill-info {
   flex: 1;
   min-width: 0;
@@ -2983,12 +3009,20 @@ textarea:focus-visible {
   }
 
   .sk-logo-nav-anim.is-expanded {
-    width: 152px;
+    gap: 8px;
   }
 
-  .sk-logo-nav-anim-svg {
-    height: 38px;
-    width: 178px;
+  .sk-nav-mark-slot {
+    width: 34px;
+    height: 34px;
+  }
+
+  .sk-nav-wordmark-name {
+    font-size: 14px;
+  }
+
+  .sk-nav-wordmark-sub {
+    font-size: 9px;
   }
 
   .sk-mobile-util-btn {
@@ -3375,6 +3409,45 @@ textarea:focus-visible {
     align-items: flex-start;
     gap: 4px;
   }
+}
+
+/* ==========================================================================
+   Arabic RTL Typography & Directional Refinement
+   ========================================================================== */
+
+[dir='rtl'] .sk-nav-trigger,
+[dir='rtl'] .sk-btn,
+[dir='rtl'] .sk-topbar-cta-flush,
+[dir='rtl'] .sk-mobile-cta,
+[dir='rtl'] .sk-mobile-primary-btn,
+[dir='rtl'] .sk-tab-btn,
+[dir='rtl'] .sk-filter-btn,
+[dir='rtl'] .sk-section-bar,
+[dir='rtl'] .sk-micro-label,
+[dir='rtl'] .sk-mono-tag,
+[dir='rtl'] .sk-footer-banner-eyebrow,
+[dir='rtl'] .sk-sitemap-heading,
+[dir='rtl'] .sk-featured-label,
+[dir='rtl'] .sk-back-top-btn,
+[dir='rtl'] .sk-field > span,
+[dir='rtl'] .sk-hero-meta-strip,
+[dir='rtl'] .sk-nav-wordmark-name,
+[dir='rtl'] .sk-nav-wordmark-sub,
+[dir='rtl'] .sk-hero-name,
+[dir='rtl'] .sk-hero-role,
+[dir='rtl'] .sk-display-h2 {
+  font-family: var(--font-arabic), 'IBM Plex Sans Arabic', system-ui, sans-serif;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+[dir='rtl'] .sk-nav-trigger {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+[dir='rtl'] .sk-mobile-link-row svg {
+  transform: scaleX(-1);
 }
 
 @media (prefers-reduced-motion: reduce) {

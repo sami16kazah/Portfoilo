@@ -1,26 +1,40 @@
 "use client";
 
 import React from 'react';
+import type { Locale } from './portfolioCopy';
 
 interface SamiBrandLogoProps {
   variant?: 'nav-animated' | 'monumental' | 'mark';
   expanded?: boolean;
+  locale?: Locale;
+  name?: string;
   subtitle?: string;
   className?: string;
 }
 
 /**
  * Bespoke geometric "SK" architectural monogram + wordmark.
- * - `nav-animated`: Single unified SVG that displays ONLY the centered SK monogram in the hero,
- *   then smoothly unfolds the full "SAMI KAZAH / Software & Cloud Engineer" wordmark to the right on scroll.
+ * - `nav-animated`: Shows ONLY the centered SK monogram in the hero, then smoothly unfolds
+ *   the localized wordmark ("SAMI KAZAH" / "سامي قزح") beside it in BOTH LTR and RTL with zero overlap.
  * - `monumental`: Large autonomous aurora-swept footer centerpiece.
  */
 export const SamiBrandLogo: React.FC<SamiBrandLogoProps> = ({
   variant = 'nav-animated',
   expanded = false,
-  subtitle = 'Software & Cloud Engineer',
+  locale = 'en',
+  name,
+  subtitle,
   className = '',
 }) => {
+  const resolvedName = name || (locale === 'ar' ? 'سامي قزح' : 'SAMI KAZAH');
+  const resolvedSub =
+    subtitle ||
+    (locale === 'ar'
+      ? 'مهندس برمجيات وسحابة'
+      : locale === 'de'
+      ? 'Software- & Cloud-Entwickler'
+      : 'Software & Cloud Engineer');
+
   if (variant === 'mark') {
     return (
       <svg
@@ -68,8 +82,8 @@ export const SamiBrandLogo: React.FC<SamiBrandLogoProps> = ({
 
   if (variant === 'monumental') {
     return (
-      <div className={`sk-logo-monumental ${className}`} role="img" aria-label="Sami Kazah">
-        <svg viewBox="0 0 760 150" className="sk-logo-monumental-svg" aria-hidden="true">
+      <div className={`sk-logo-monumental ${className}`} role="img" aria-label={resolvedName}>
+        <svg viewBox="0 0 760 150" direction="ltr" className="sk-logo-monumental-svg" aria-hidden="true">
           <defs>
             <linearGradient
               id="sk-footer-aurora"
@@ -109,13 +123,19 @@ export const SamiBrandLogo: React.FC<SamiBrandLogoProps> = ({
             x="380"
             y="138"
             textAnchor="middle"
-            fontFamily="'Geist Mono', monospace"
+            fontFamily={
+              locale === 'ar'
+                ? "'IBM Plex Sans Arabic', system-ui, sans-serif"
+                : "'Geist Mono', monospace"
+            }
             fontWeight="500"
-            fontSize="16"
-            letterSpacing="4.5"
+            fontSize={locale === 'ar' ? '18' : '16'}
+            letterSpacing={locale === 'ar' ? '0' : '4.5'}
             fill="var(--ink-muted)"
           >
-            SOFTWARE · CLOUD · FULL-STACK ENGINEERING
+            {locale === 'ar'
+              ? 'هندسة البرمجيات · الأنظمة السحابية · التطوير المتكامل'
+              : 'SOFTWARE · CLOUD · FULL-STACK ENGINEERING'}
           </text>
         </svg>
       </div>
@@ -126,73 +146,18 @@ export const SamiBrandLogo: React.FC<SamiBrandLogoProps> = ({
     <span
       className={`sk-logo-nav-anim ${expanded ? 'is-expanded' : ''} ${className}`}
       role="img"
-      aria-label="Sami Kazah — Software & Cloud Engineer"
+      aria-label={`${resolvedName} — ${resolvedSub}`}
     >
-      <svg viewBox="0 0 340 72" className="sk-logo-nav-anim-svg" aria-hidden="true">
-        <defs>
-          <linearGradient id="sk-nav-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="var(--sk-indigo)" />
-            <stop offset="55%" stopColor="var(--sk-cyan)" />
-            <stop offset="100%" stopColor="var(--sk-emerald)" />
-          </linearGradient>
-        </defs>
+      <span className="sk-nav-mark-slot" aria-hidden="true">
+        <SamiBrandLogo variant="mark" className="sk-nav-mark-svg" />
+      </span>
 
-        {/* Unified Monogram Group: centered in hero, anchors left as wordmark unfolds */}
-        <g className="sk-nav-anim-mark">
-          <rect
-            x="6"
-            y="10"
-            width="52"
-            height="52"
-            rx="10"
-            fill="var(--bg-card)"
-            stroke="url(#sk-nav-grad)"
-            strokeWidth="2.4"
-          />
-          <path
-            d="M27.5 26H21C18.7 26 17 27.5 17 29.6C17 31.6 18.6 33 21.1 33.6L25 34.6C27.7 35.2 29.2 36.7 29.2 39.2C29.2 41.9 27.1 44 23.9 44H17"
-            fill="none"
-            stroke="var(--ink-strong)"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M35.5 26V44M46 26L36.5 35L47 44"
-            fill="none"
-            stroke="url(#sk-nav-grad)"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </g>
-
-        {/* Wordmark + Gray Slogan unfolding smoothly to the right on scroll */}
-        <g className="sk-nav-anim-wordmark">
-          <text
-            x="72"
-            y="37"
-            fontFamily="'Bricolage Grotesque', 'Archivo', system-ui, sans-serif"
-            fontWeight="800"
-            fontSize="24"
-            letterSpacing="-0.5"
-            fill="var(--ink-strong)"
-          >
-            SAMI KAZAH
-          </text>
-          <text
-            x="73"
-            y="56"
-            fontFamily="'Geist Mono', monospace"
-            fontWeight="500"
-            fontSize="11.5"
-            letterSpacing="0.5"
-            fill="var(--ink-muted)"
-          >
-            {subtitle}
-          </text>
-        </g>
-      </svg>
+      <span className="sk-nav-wordmark-wrap" aria-hidden="true">
+        <span className="sk-nav-wordmark-inner">
+          <strong className="sk-nav-wordmark-name">{resolvedName}</strong>
+          <small className="sk-nav-wordmark-sub">{resolvedSub}</small>
+        </span>
+      </span>
     </span>
   );
 };

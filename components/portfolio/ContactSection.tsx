@@ -161,7 +161,13 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
               </div>
 
               <div className="sk-contact-email-box">
-                <span className="sk-micro-label">DIRECT EMAIL</span>
+                <span className="sk-micro-label">
+                  {locale === 'ar'
+                    ? 'البريد المباشر'
+                    : locale === 'de'
+                    ? 'DIREKTE E-MAIL'
+                    : 'DIRECT EMAIL'}
+                </span>
                 <strong className="sk-contact-email-val">{contactEmail}</strong>
                 <div className="sk-contact-email-btns">
                   <a href={`mailto:${contactEmail}`} className="sk-btn sk-btn-primary sk-btn-sm">

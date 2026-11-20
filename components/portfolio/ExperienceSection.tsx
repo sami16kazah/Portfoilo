@@ -269,7 +269,7 @@ export const ExperienceSection: React.FC<ExperienceSectionProps> = ({
                     </svg>
                     <div className="sk-fps-readout">
                       <span className="sk-micro-label">{copy.jobs.fpsLabel}</span>
-                      <strong>{telemetry.fps} FPS</strong>
+                      <strong dir="ltr">{telemetry.fps} FPS</strong>
                       <small>{copy.jobs.measureNote}</small>
                     </div>
                   </div>
@@ -277,15 +277,15 @@ export const ExperienceSection: React.FC<ExperienceSectionProps> = ({
                   <div className="sk-runtime-grid">
                     <div className="sk-runtime-cell">
                       <span>{copy.jobs.fcpLabel}</span>
-                      <strong>{telemetry.fcpMs !== null ? `${telemetry.fcpMs} ms` : '—'}</strong>
+                      <strong dir="ltr">{telemetry.fcpMs !== null ? `${telemetry.fcpMs} ms` : '—'}</strong>
                     </div>
                     <div className="sk-runtime-cell">
                       <span>{copy.jobs.domLabel}</span>
-                      <strong>{telemetry.domReadyMs !== null ? `${telemetry.domReadyMs} ms` : '—'}</strong>
+                      <strong dir="ltr">{telemetry.domReadyMs !== null ? `${telemetry.domReadyMs} ms` : '—'}</strong>
                     </div>
                     <div className="sk-runtime-cell">
                       <span>{copy.jobs.ttfbLabel}</span>
-                      <strong>{telemetry.ttfbMs !== null ? `${telemetry.ttfbMs} ms` : '—'}</strong>
+                      <strong dir="ltr">{telemetry.ttfbMs !== null ? `${telemetry.ttfbMs} ms` : '—'}</strong>
                     </div>
                   </div>
                 </div>

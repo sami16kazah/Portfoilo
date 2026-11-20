@@ -390,7 +390,7 @@ export const OrbitalHero: React.FC<OrbitalHeroProps> = ({
       </div>
 
       {/* Kinetic Bottom Marquee anchored to viewport bottom */}
-      <div className="sk-marquee" aria-label="Core expertise">
+      <div className="sk-marquee" dir="ltr" aria-label="Core expertise">
         <div className="sk-marquee-track">
           {[...tickerItems, ...tickerItems].map((label, idx) => (
             <span key={idx} className="sk-marquee-item">

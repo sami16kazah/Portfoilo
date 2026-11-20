@@ -83,14 +83,8 @@ export const TopBar: React.FC<TopBarProps> = ({
           >
             <SamiBrandLogo
               variant="nav-animated"
+              locale={locale}
               expanded={pastHero || mobileMenuOpen}
-              subtitle={
-                locale === 'de'
-                  ? 'Software- & Cloud-Entwickler'
-                  : locale === 'ar'
-                  ? 'Software & Cloud Engineer'
-                  : 'Software & Cloud Engineer'
-              }
             />
           </a>
 

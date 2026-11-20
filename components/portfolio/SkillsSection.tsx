@@ -112,20 +112,28 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ locale, skills }) 
                   skill.icon.startsWith('./') ||
                   skill.icon.startsWith('http'))
             );
+            const isDarkMonoIcon = Boolean(
+              isImg &&
+                /(next\.?js|unreal)/i.test(`${skill.name} ${skill.icon || ''}`)
+            );
             const prof = Math.min(100, Math.max(20, skill.proficiency || 82));
 
             return (
               <div key={skill._id} className="sk-skill-card">
                 <div className="sk-skill-icon-box">
                   {isImg ? (
-                    <img src={resolveAssetUrl(skill.icon)} alt={label} />
+                    <img
+                      src={resolveAssetUrl(skill.icon)}
+                      alt={label}
+                      className={isDarkMonoIcon ? 'sk-skill-img-invert-dark' : undefined}
+                    />
                   ) : (
                     renderCloudIcon(skill.icon)
                   )}
                 </div>
                 <div className="sk-skill-info">
                   <div className="sk-skill-top">
-                    <strong>{label}</strong>
+                    <strong dir="ltr">{label}</strong>
                     <span className="sk-skill-cat">{catLabel}</span>
                   </div>
                   <div className="sk-skill-meter" aria-hidden="true">
