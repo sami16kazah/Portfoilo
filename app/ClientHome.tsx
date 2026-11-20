@@ -90,30 +90,33 @@ export default function ClientHome({
   const copy = PORTFOLIO_COPY[locale];
 
   const rulerSections = useMemo(() => {
-    const list = [{ id: "hero", label: "SAMI KAZAH" }];
+    const isAr = locale === "ar";
+    const fmt = (s: string) => (isAr ? s : s.toUpperCase());
+    const list = [{ id: "hero", label: isAr ? "سامي قزح" : "SAMI KAZAH" }];
     if (showExperience && jobs.length > 0) {
-      list.push({ id: "experience", label: copy.nav.experience.toUpperCase() });
+      list.push({ id: "experience", label: fmt(copy.nav.experience) });
     }
     if (showProjects && projects.length > 0) {
-      list.push({ id: "projects", label: copy.nav.projects.toUpperCase() });
+      list.push({ id: "projects", label: fmt(copy.nav.projects) });
     }
     if (showSkills && skills.length > 0) {
-      list.push({ id: "skills", label: copy.nav.skills.toUpperCase() });
+      list.push({ id: "skills", label: fmt(copy.nav.skills) });
     }
     if (showBooks && books.length > 0) {
-      list.push({ id: "books", label: copy.nav.books.toUpperCase() });
+      list.push({ id: "books", label: fmt(copy.nav.books) });
     }
     if (showEducation || showGallery) {
-      list.push({ id: "credentials", label: copy.nav.education.toUpperCase() });
+      list.push({ id: "credentials", label: fmt(copy.nav.education) });
     }
     if (showContact) {
-      list.push({ id: "contact", label: copy.nav.contact.toUpperCase() });
+      list.push({ id: "contact", label: fmt(copy.nav.contact) });
     }
     return list;
   }, [
     books.length,
     copy,
     jobs.length,
+    locale,
     projects.length,
     showBooks,
     showContact,
@@ -195,7 +198,7 @@ export default function ClientHome({
         onSelectProject={setSelectedProjectIdx}
       />
 
-      {locale !== "ar" && <ScrollRuler sections={rulerSections} onNavigate={handleNavigate} />}
+      <ScrollRuler sections={rulerSections} onNavigate={handleNavigate} rtl={locale === "ar"} />
 
       <div className="sk-main-frame">
         <main>

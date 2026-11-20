@@ -10,21 +10,22 @@ export interface RulerSection {
 interface ScrollRulerProps {
   sections: RulerSection[];
   onNavigate: (id: string) => void;
+  rtl?: boolean;
 }
 
 const TRACK_TOP = 72;
 const TRACK_BOTTOM = 24;
 const PILE_START_Y = 74;
-const PILE_ROW_H = 19;
+const PILE_ROW_H = 20;
 const QUEUE_ROW_H = 22;
 const QUEUE_BOTTOM_PAD = 20;
 const ACTIVE_HEADING_OFFSET = 14;
-const RIGHT_MARGIN = 64;
+const EDGE_MARGIN = 64;
 const CHAR_PITCH_PILE = 7.4;
 const CHAR_PITCH_ACTIVE = 12.2;
 const CHAR_PITCH_QUEUE = 8.4;
 const RAIL_PITCH = 12.6;
-const RAIL_X_RIGHT = 62;
+const RAIL_X_OFFSET = 62;
 const RAIL_ARC_BEND = 26;
 
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
@@ -44,7 +45,11 @@ interface MeasuredAnchor {
   norm: number;
 }
 
-export const ScrollRuler: React.FC<ScrollRulerProps> = ({ sections, onNavigate }) => {
+export const ScrollRuler: React.FC<ScrollRulerProps> = ({
+  sections,
+  onNavigate,
+  rtl = false,
+}) => {
   const trackRef = useRef<HTMLDivElement>(null);
   const [isDesktop, setIsDesktop] = useState(false);
   const [viewportH, setViewportH] = useState(900);
@@ -82,12 +87,23 @@ export const ScrollRuler: React.FC<ScrollRulerProps> = ({ sections, onNavigate }
   const measureAnchors = useCallback(() => {
     const docH = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
     setViewportRatio(
-      Math.max(0.05, Math.min(0.45, window.innerHeight / Math.max(window.innerHeight, document.documentElement.scrollHeight)))
+      Math.max(
+        0.05,
+        Math.min(
+          0.45,
+          window.innerHeight / Math.max(window.innerHeight, document.documentElement.scrollHeight)
+        )
+      )
     );
     const measured: MeasuredAnchor[] = sections.map((sec, idx) => {
       if (idx === 0) return { id: sec.id, label: sec.label, norm: 0 };
       const el = document.getElementById(sec.id);
-      if (!el) return { id: sec.id, label: sec.label, norm: idx / Math.max(1, sections.length - 1) };
+      if (!el)
+        return {
+          id: sec.id,
+          label: sec.label,
+          norm: idx / Math.max(1, sections.length - 1),
+        };
       const top = Math.max(0, el.offsetTop - 96);
       return { id: sec.id, label: sec.label, norm: clamp01(top / docH) };
     });
@@ -213,21 +229,63 @@ export const ScrollRuler: React.FC<ScrollRulerProps> = ({ sections, onNavigate }
       const queueRankFromBottom = Math.max(0, totalSections - 1 - sIdx);
       const queueY = queueBottomY - queueRankFromBottom * QUEUE_ROW_H;
 
-      const chars = anchor.label.split('');
-      const charCount = chars.length;
       const isCurrent = sIdx === activeIndex;
       const isPassed = sIdx < activeIndex;
-      const isFuture = sIdx > activeIndex;
+
+      // Whole-word kinetic arc for RTL Arabic (preserves cursive Arabic shaping cleanly)
+      if (rtl) {
+        let x = EDGE_MARGIN;
+        let y = queueY;
+        let scale = 0.86;
+        let opacity = 0.32;
+
+        if (enterProgress <= 0.001) {
+          y = queueY;
+          scale = 0.86;
+          opacity = isHovering || isDragging ? 0.62 : 0.3;
+        } else if (enterProgress < 0.999) {
+          const t = enterProgress;
+          const ctrlX = EDGE_MARGIN + RAIL_ARC_BEND * Math.sin(t * Math.PI);
+          x = quadBez(EDGE_MARGIN, ctrlX, EDGE_MARGIN, t);
+          y = quadBez(queueY, lerp(queueY, activeY, 0.5), activeY, t);
+          scale = lerp(0.86, 1.24, t);
+          opacity = lerp(0.35, 1, smoothstep(0, 0.65, t));
+        } else if (exitProgress > 0.001) {
+          const t = exitProgress;
+          x = EDGE_MARGIN + 8 * Math.sin(t * Math.PI);
+          y = lerp(activeY, pileY, t);
+          scale = lerp(1.24, 0.82, t);
+          opacity = lerp(1, isHovering || isDragging ? 0.62 : 0.34, t);
+        } else {
+          y = activeY;
+          scale = 1.24;
+          opacity = 1;
+        }
+
+        return {
+          id: anchor.id,
+          label: anchor.label,
+          isCurrent,
+          isPassed,
+          rtlWord: { x, y, scale, opacity },
+          letters: [],
+          hitY: isPassed ? pileY : isCurrent ? activeY : queueY,
+          hitW: 112,
+        };
+      }
+
+      const chars = anchor.label.split('');
+      const charCount = chars.length;
 
       const letters = chars.map((ch, cIdx) => {
         const idxFromRight = charCount - 1 - cIdx;
         const charFrac = charCount > 1 ? cIdx / (charCount - 1) : 0;
 
-        const qX = -(RIGHT_MARGIN + idxFromRight * CHAR_PITCH_QUEUE);
+        const qX = -(EDGE_MARGIN + idxFromRight * CHAR_PITCH_QUEUE);
         const qY = queueY;
-        const aX = -(RIGHT_MARGIN + idxFromRight * CHAR_PITCH_ACTIVE);
+        const aX = -(EDGE_MARGIN + idxFromRight * CHAR_PITCH_ACTIVE);
         const aY = activeY;
-        const pX = -(RIGHT_MARGIN + idxFromRight * CHAR_PITCH_PILE);
+        const pX = -(EDGE_MARGIN + idxFromRight * CHAR_PITCH_PILE);
         const pY = pileY;
 
         let x = qX;
@@ -245,7 +303,7 @@ export const ScrollRuler: React.FC<ScrollRulerProps> = ({ sections, onNavigate }
           const stagger = charFrac * 0.36;
           const t = clamp01((enterProgress - stagger) / (1 - 0.36));
           const railMidY = lerp(qY, aY, 0.52) + (cIdx - (charCount - 1) / 2) * RAIL_PITCH * 0.5;
-          const railCtrlX = -(RAIL_X_RIGHT + RAIL_ARC_BEND * Math.sin(t * Math.PI));
+          const railCtrlX = -(RAIL_X_OFFSET + RAIL_ARC_BEND * Math.sin(t * Math.PI));
 
           x = quadBez(qX, railCtrlX, aX, t);
           y = quadBez(qY, railMidY, aY, t);
@@ -281,45 +339,66 @@ export const ScrollRuler: React.FC<ScrollRulerProps> = ({ sections, onNavigate }
         label: anchor.label,
         isCurrent,
         isPassed,
-        isFuture,
+        rtlWord: null,
         letters,
         hitY,
         hitW,
       };
     });
-  }, [anchors, activeIndex, isDesktop, isDragging, isHovering, progress, viewportH]);
+  }, [anchors, activeIndex, isDesktop, isDragging, isHovering, progress, rtl, viewportH]);
 
   if (!isDesktop) return null;
 
   return (
-    <div className={`sk-ruler-shell ${visible ? 'is-visible' : ''}`}>
+    <div className={`sk-ruler-shell ${visible ? 'is-visible' : ''} ${rtl ? 'is-rtl' : ''}`}>
       <div className="sk-ruler-kinetic-layer" aria-hidden="true">
         {kineticWords.map((word) => (
           <div key={word.id} className="sk-ruler-word-group">
             <button
               type="button"
               className="sk-ruler-word-hit"
-              style={{
-                top: `${word.hitY - 11}px`,
-                right: `${RIGHT_MARGIN - 8}px`,
-                width: `${word.hitW}px`,
-              }}
+              style={
+                rtl
+                  ? {
+                      top: `${word.hitY - 11}px`,
+                      left: `${EDGE_MARGIN - 8}px`,
+                      width: `${word.hitW}px`,
+                    }
+                  : {
+                      top: `${word.hitY - 11}px`,
+                      right: `${EDGE_MARGIN - 8}px`,
+                      width: `${word.hitW}px`,
+                    }
+              }
               onClick={() => onNavigate(word.id)}
               title={word.label}
               aria-label={word.label}
             />
-            {word.letters.map((l, cIdx) => (
+
+            {word.rtlWord ? (
               <span
-                key={cIdx}
-                className={`sk-ruler-letter ${word.isCurrent ? 'is-current' : ''}`}
+                className={`sk-ruler-word-rtl ${word.isCurrent ? 'is-current' : ''}`}
                 style={{
-                  transform: `translate3d(${l.x}px, ${l.y}px, 0) rotate(${l.rot}deg) scale(${l.scale})`,
-                  opacity: l.opacity,
+                  transform: `translate3d(${word.rtlWord.x}px, ${word.rtlWord.y}px, 0) scale(${word.rtlWord.scale})`,
+                  opacity: word.rtlWord.opacity,
                 }}
               >
-                {l.ch === ' ' ? '\u00A0' : l.ch}
+                {word.label}
               </span>
-            ))}
+            ) : (
+              word.letters.map((l, cIdx) => (
+                <span
+                  key={cIdx}
+                  className={`sk-ruler-letter ${word.isCurrent ? 'is-current' : ''}`}
+                  style={{
+                    transform: `translate3d(${l.x}px, ${l.y}px, 0) rotate(${l.rot}deg) scale(${l.scale})`,
+                    opacity: l.opacity,
+                  }}
+                >
+                  {l.ch === ' ' ? '\u00A0' : l.ch}
+                </span>
+              ))
+            )}
           </div>
         ))}
       </div>
@@ -407,14 +486,14 @@ export const ScrollRuler: React.FC<ScrollRulerProps> = ({ sections, onNavigate }
             <span className="sk-ruler-ghost-line" />
             <span className="sk-ruler-ghost-pill">
               <strong>{hoveredSection.label}</strong>
-              <em>{Math.round((hoverNorm ?? 0) * 100)}%</em>
+              <em dir="ltr">{Math.round((hoverNorm ?? 0) * 100)}%</em>
             </span>
           </div>
         )}
 
         <div className="sk-ruler-needle" style={{ transform: `translateY(${needleY}px)` }}>
           <span className="sk-ruler-needle-line" />
-          <div className="sk-ruler-odometer" aria-hidden="true">
+          <div className="sk-ruler-odometer" dir="ltr" aria-hidden="true">
             {[d0, d1, d2].map((digit, idx) => (
               <span key={idx} className="sk-odo-col">
                 <span

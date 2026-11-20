@@ -675,6 +675,67 @@ textarea:focus-visible {
   line-height: 11px;
 }
 
+/* RTL Mirrored Calibrated Scroll Ruler (Left Edge in Arabic) */
+.sk-ruler-word-rtl {
+  position: fixed;
+  top: 0;
+  left: 0;
+  font-family: var(--font-arabic), 'IBM Plex Sans Arabic', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink-muted);
+  white-space: nowrap;
+  transform-origin: left center;
+  will-change: transform, opacity;
+  pointer-events: none;
+  transition: color 200ms ease;
+}
+
+.sk-ruler-word-rtl.is-current {
+  color: var(--ink-strong);
+}
+
+.sk-ruler-shell.is-rtl .sk-scroll-ruler {
+  right: auto;
+  left: 0;
+  background: linear-gradient(
+    270deg,
+    transparent 0%,
+    color-mix(in srgb, var(--bg) 72%, transparent) 46%,
+    color-mix(in srgb, var(--bg) 92%, transparent) 100%
+  );
+}
+
+.sk-ruler-shell.is-rtl .sk-ruler-spine {
+  right: auto;
+  left: 0;
+}
+
+.sk-ruler-shell.is-rtl .sk-ruler-tick {
+  justify-content: flex-start;
+}
+
+.sk-ruler-shell.is-rtl .sk-ruler-tick-num {
+  right: auto;
+  left: 19px;
+}
+
+.sk-ruler-shell.is-rtl .sk-ruler-anchor {
+  left: auto;
+  right: 6px;
+}
+
+.sk-ruler-shell.is-rtl .sk-ruler-ghost-pill {
+  right: auto;
+  left: 60px;
+}
+
+.sk-ruler-shell.is-rtl .sk-ruler-odometer {
+  right: auto;
+  left: 6px;
+}
+
 /* ==========================================================================
    Full-Viewport ArtCraft-Scale Orbital Hero
    ========================================================================== */
